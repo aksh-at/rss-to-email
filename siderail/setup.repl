@@ -1,0 +1,22 @@
+(require
+ '[clojure.data.json :as json]
+ '[clojure.java.io :as io]
+ '[clojure.pprint :as pp]
+ '[datomic.client.api :as d]
+ '[datomic.ion.rustic :as rustic]
+ '[datomic.ion.rustic.edn :as s-edn]
+ '[datomic.ion.rustic.lambdas :as lambdas]
+ '[datomic.ion.rustic.schema :as schema]
+ '[datomic.ion.rustic.utils :as utils])
+
+;; Edit resources/datomic/ion/rustic/config.edn to match your system
+
+;; test that config works
+(def client (rustic/get-client))
+
+;; create database and load sample data:
+(rustic/ensure-schemas-loaded)
+
+(def conn (rustic/get-connection))
+@(def db (d/db conn))
+

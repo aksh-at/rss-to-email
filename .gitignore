@@ -1,0 +1,8 @@
+classes/*
+target/*
+.cpcache/*
+.idea/*
+.rebl/*
+REBL-*.jar
+.datomic-ions/*
+.lsp/
