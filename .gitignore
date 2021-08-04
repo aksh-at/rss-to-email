@@ -1,0 +1,16 @@
+classes/*
+target/*
+.cpcache/*
+.idea/*
+.rebl/*
+REBL-*.jar
+.datomic-ions/*
+.lsp/
+.clj-kondo/
+.nrepl-port
+.DS_Store
+/frontend/node_modules
+/frontend/.next
+.log/
+test-setup.repl
+commands.repl

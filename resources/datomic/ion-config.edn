@@ -1,0 +1,19 @@
+{:lambdas {:poll-all
+           {:fn datomic.ion.rsstoemail.lambdas/poll-all
+            :description "Poll all subscriptions."}
+           :request-manage
+           {:fn datomic.ion.rsstoemail.http/request-manage-lambda-proxy
+            :description "Request magic link to manage existing subscriptions."}
+           :get-current-subs
+           {:fn datomic.ion.rsstoemail.http/get-current-subs-lambda-proxy
+            :description "Get all subs given a token."}
+           :unsubscribe
+           {:fn datomic.ion.rsstoemail.http/unsubscribe-lambda-proxy
+            :description "Unsubscribe."}
+           :request-sub
+           {:fn datomic.ion.rsstoemail.http/request-sub-lambda-proxy
+            :description "Request new subscription."}
+           :register-sub
+           {:fn datomic.ion.rsstoemail.http/register-sub-lambda-proxy
+            :description "Confirm subscription."}}
+ :app-name "datomic-4"}

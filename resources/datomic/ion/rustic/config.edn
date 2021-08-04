@@ -1,0 +1,5 @@
+{:server-type :ion
+ :region "us-east-2"
+ :system ""
+ ;ClientApiGatewayEndpoint output from cloudformation stack
+ :endpoint ""}

@@ -1,0 +1,31 @@
+(require
+ '[clojure.data.json :as json]
+ '[clojure.java.io :as io]
+ '[clojure.pprint :as pp]
+ '[datomic.client.api :as d]
+ '[datomic.ion.cast :as cast]
+ '[datomic.ion.rsstoemail :as rsstoemail]
+ '[datomic.ion.rsstoemail.auth :as auth]
+ '[datomic.ion.rsstoemail.edn :as s-edn]
+ '[datomic.ion.rsstoemail.http :as http]
+ '[datomic.ion.rsstoemail.lambdas :as lambdas]
+ '[datomic.ion.rsstoemail.mailer :as mailer]
+ '[datomic.ion.rsstoemail.schema :as schema]
+ '[datomic.ion.rsstoemail.db-utils :as db-utils]
+ '[datomic.ion.rsstoemail.poller :as poller]
+ '[datomic.ion.rsstoemail.utils :as utils])
+
+(cast/initialize-redirect :stdout)
+;; (require '[clojure.tools.namespace.repl :refer [refresh]])
+
+;; Edit resources/datomic/ion/rsstoemail/config.edn to match your system
+
+;; test that config works
+(def client (db-utils/get-client))
+
+;; create database and load sample data:
+(db-utils/ensure-schemas-loaded)
+
+(def conn (rsstoemail/get-connection))
+@(def db (d/db conn))
+
