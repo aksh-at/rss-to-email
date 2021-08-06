@@ -40,9 +40,6 @@
          :where [?e :sub/email ?email]]
        db email pull-expr))
 
-;; temp delete later
-(defn test-get-subs-by-email [] (get-subs-by-email (get-db) "akshatb42@gmail.com" [:sub/rss]))
-
 (defn ensure-schemas-loaded
   "Creates db (if necessary) and schemas with retries."
   []
