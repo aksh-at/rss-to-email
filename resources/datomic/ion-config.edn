@@ -1,4 +1,4 @@
 {:lambdas {:get-subs-by-email
            {:fn datomic.ion.rustic.lambdas/get-subs-by-email
             :description "return subscriptions by email"}}
- :app-name "datomic-1"}
+ :app-name "datomic-4"}

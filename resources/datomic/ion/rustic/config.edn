@@ -1,5 +1,5 @@
 {:server-type :ion
  :region "us-east-2"
- :system "datomic-1"
+ :system "datomic-4"
  ;ClientApiGatewayEndpoint output from cloudformation stack
- :endpoint "https://rozsub5u8i.execute-api.us-east-2.amazonaws.com"}
+ :endpoint "https://cc4nh47rcc.execute-api.us-east-2.amazonaws.com"}
