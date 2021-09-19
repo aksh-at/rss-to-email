@@ -1,8 +1,8 @@
 (ns datomic.ion.rustic.poller (:require
                                [clojure.instant :as instant]
                                [clojure.xml :as xml]
-                               [clj-time.corece :as tc]
-                               [clj-time.format :as tf]))
+                               [clj-time.format :as tf]
+                               [clj-time.coerce :as tc]))
 
 (defn find-tag [x input]
   (filter #(= (% :tag) x) input))
@@ -32,6 +32,14 @@
        instant/read-instant-date))
 
 (defn find-last-date [xml-content]
-  (try
-    (find-rss-last-date xml-content)
-    (catch Exception _ (find-atom-last-date xml-content))))
+  (case (:tag xml-content)
+    :rss (find-rss-last-date xml-content)
+    :feed (find-atom-last-date xml-content)
+    (throw (Exception. "Unsupported feed type. Use RSS or Atom XML feed."))))
+
+(defn poll
+  "Poll a URL, update last-checked in DB and send notification if updated."
+  [email feed-url]
+  (let [xml-content (xml/parse feed-url)
+        last-date ()])
+  )

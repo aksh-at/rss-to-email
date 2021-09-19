@@ -9,12 +9,12 @@
   [{:keys [input]}]
   (-> (rustic/get-db)
       (rustic/get-subs-by-email (-> input json/read-str keyword)
-                                [:sub/email :sub/rss])
+                                [:sub/email :sub/feed-url])
       edn/write-str))
 
 (defn register-sub
   [{:keys [input]}]
-  (let [{:keys [email rss]} (json/read-str input :key-fn keyword)]
+  (let [{:keys [email feed-url]} (json/read-str input :key-fn keyword)]
     (-> (rustic/get-connection)
-        (rustic/register-sub email rss)
+        (rustic/register-sub email feed-url)
         edn/write-str)))

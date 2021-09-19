@@ -17,22 +17,22 @@
 
 (defn sub-exists
   "Returns all subs matching given email."
-  [db email rss]
+  [db email feed-url]
   (-> (d/q '[:find ?e
-             :in $ [?email ?rss]
+             :in $ [?email ?feed-url]
              :where [?e :sub/email ?email]
-             [?e :sub/rss ?rss]]
-           db [email rss])
+             [?e :sub/feed-url ?feed-url]]
+           db [email feed-url])
       first
       some?))
 
 (defn register-sub
   "Creates sub for a given email and blog."
-  [conn email rss]
-  (when-not (sub-exists (d/db conn) email rss)
-    (d/transact conn {:tx-data [{:sub/email email, :sub/rss rss}]})))
+  [conn email feed-url]
+  (when-not (sub-exists (d/db conn) email feed-url)
+    (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]})))
 
 (defn poll-subs
   "Get last query time & see if there are any updates since then."
-  [conn email rss]
-  (d/transact conn {:tx-data [{:sub/email email, :sub/rss rss}]}))
+  [conn email feed-url]
+  (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]}))
