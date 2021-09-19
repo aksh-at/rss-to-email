@@ -33,12 +33,17 @@
   (d/db (get-connection)))
 
 (defn get-subs-by-email
-  "Returns all subs matching given email"
+  "Returns all subs matching given email."
   [db email pull-expr]
   (d/q '[:find (pull ?e pull-expr)
-         :in $ ?type pull-expr
+         :in $ ?email pull-expr
          :where [?e :sub/email ?email]]
        db email pull-expr))
+
+(defn register-sub
+  "Creates sub for a given email and blog."
+  [conn email rss]
+  (d/transact conn {:tx-data [{:sub/email email, :sub/rss rss}]}))
 
 (defn ensure-schemas-loaded
   "Creates db (if necessary) and schemas with retries."
