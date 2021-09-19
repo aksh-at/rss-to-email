@@ -39,5 +39,5 @@
       :already-loaded
       (let [xact #(d/transact conn {:tx-data %})]
         (xact subscription-schema)
-        (xact [sample-sub])
+        ;; (xact [sample-sub])
         :loaded))))
