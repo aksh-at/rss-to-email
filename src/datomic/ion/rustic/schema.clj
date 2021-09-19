@@ -8,11 +8,20 @@
     :db/cardinality :db.cardinality/one}
    {:db/ident :sub/rss
     :db/valueType :db.type/string
+    :db/cardinality :db.cardinality/one}
+   {:db/ident :sub/email+rss
+    :db/valueType :db.type/tuple
+    :db/tupleAttrs [:sub/email :sub/rss]
+    :db/cardinality :db.cardinality/one
+    :db/unique :db.unique/identity}
+   {:db/ident :sub/last-checked
+    :db/valueType :db.type/instant
     :db/cardinality :db.cardinality/one}])
 
 (def sample-sub
   {:sub/email "akshatb42@gmail.com"
-   :sub/rss "https://aksh-at.github.io/index.xml"})
+   :sub/rss "https://aksh-at.github.io/index.xml"
+   :sub/last-checked (new java.util.Date) })
 
 (defn- has-ident?
   [db ident]

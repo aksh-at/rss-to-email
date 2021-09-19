@@ -1,36 +1,11 @@
 (ns datomic.ion.rustic
   (:require
-   [clojure.edn :as edn]
-   [clojure.java.io :as io]
    [datomic.client.api :as d]
-   [datomic.ion.rustic.schema :as schema]
-   [datomic.ion.rustic.utils :as utils]))
+   [datomic.ion.rustic.db-utils :as db-utils]))
 
-(def database-name "datomic-rustic")
+(def get-db db-utils/get-db)
 
-(def get-client
-  "Return a shared client."
-  (memoize #(if-let [r (io/resource "datomic/ion/rustic/config.edn")]
-              (d/client (edn/read-string (slurp r)))
-              (throw (RuntimeException. "bad")))))
-
-(defn get-connection
-  "Get shared connection."
-  []
-  (utils/with-retry #(d/connect (get-client) {:db-name database-name})))
-
-(defn load-schemas
-  "Load the schemas and create db."
-  []
-  (let [client (get-client)]
-    (d/create-database client {:db-name database-name})
-    (let [conn (get-connection)]
-      (schema/load-schema conn))))
-
-(defn get-db
-  "Returns current db value from shared connection."
-  []
-  (d/db (get-connection)))
+(def get-connection db-utils/get-connection)
 
 (defn get-subs-by-email
   "Returns all subs matching given email."
@@ -40,12 +15,24 @@
          :where [?e :sub/email ?email]]
        db email pull-expr))
 
+(defn sub-exists
+  "Returns all subs matching given email."
+  [db email rss]
+  (-> (d/q '[:find ?e
+             :in $ [?email ?rss]
+             :where [?e :sub/email ?email]
+             [?e :sub/rss ?rss]]
+           db [email rss])
+      first
+      some?))
+
 (defn register-sub
   "Creates sub for a given email and blog."
   [conn email rss]
-  (d/transact conn {:tx-data [{:sub/email email, :sub/rss rss}]}))
+  (when-not (sub-exists (d/db conn) email rss)
+    (d/transact conn {:tx-data [{:sub/email email, :sub/rss rss}]})))
 
-(defn ensure-schemas-loaded
-  "Creates db (if necessary) and schemas with retries."
-  []
-  (utils/with-retry load-schemas))
+(defn poll-subs
+  "Get last query time & see if there are any updates since then."
+  [conn email rss]
+  (d/transact conn {:tx-data [{:sub/email email, :sub/rss rss}]}))

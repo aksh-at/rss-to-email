@@ -7,15 +7,17 @@
  '[datomic.ion.rustic.edn :as s-edn]
  '[datomic.ion.rustic.lambdas :as lambdas]
  '[datomic.ion.rustic.schema :as schema]
+ '[datomic.ion.rustic.db-utils :as db-utils]
+ '[datomic.ion.rustic.poller :as poller]
  '[datomic.ion.rustic.utils :as utils])
 
 ;; Edit resources/datomic/ion/rustic/config.edn to match your system
 
 ;; test that config works
-(def client (rustic/get-client))
+(def client (db-utils/get-client))
 
 ;; create database and load sample data:
-(rustic/ensure-schemas-loaded)
+(db-utils/ensure-schemas-loaded)
 
 (def conn (rustic/get-connection))
 @(def db (d/db conn))
