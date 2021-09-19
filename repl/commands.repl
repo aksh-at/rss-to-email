@@ -1,0 +1,6 @@
+(load-file "../setup.repl")
+
+(rustic/get-subs-by-email db "a2" [:sub/rss])
+
+(lambdas/register-sub {:input (json/write-str {:email "a2", :rss "b2"}) })
+

@@ -6,3 +6,5 @@ target/*
 REBL-*.jar
 .datomic-ions/*
 .lsp/
+.clj-kondo/
+.nrepl-port
