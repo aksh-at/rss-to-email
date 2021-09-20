@@ -1,6 +1,7 @@
 (ns datomic.ion.rustic
   (:require
    [datomic.client.api :as d]
+   [datomic.ion.rustic.schema :as schema]
    [datomic.ion.rustic.db-utils :as db-utils]))
 
 (def get-db db-utils/get-db)
@@ -15,21 +16,14 @@
          :where [?e :sub/email ?email]]
        db email pull-expr))
 
-(defn sub-exists
-  "Returns all subs matching given email."
+(defn sub-exists?
   [db email feed-url]
-  (-> (d/q '[:find ?e
-             :in $ [?email ?feed-url]
-             :where [?e :sub/email ?email]
-             [?e :sub/feed-url ?feed-url]]
-           db [email feed-url])
-      first
-      some?))
+  (some? (schema/find-sub db email feed-url)))
 
 (defn register-sub
   "Creates sub for a given email and blog."
   [conn email feed-url]
-  (when-not (sub-exists (d/db conn) email feed-url)
+  (when-not (sub-exists? (d/db conn) email feed-url)
     (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]})))
 
 (defn poll-subs
