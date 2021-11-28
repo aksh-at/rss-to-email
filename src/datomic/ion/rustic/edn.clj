@@ -24,3 +24,9 @@ Not efficient."
   [x]
   (-> x write-str (.getBytes "UTF-8") java.io.ByteArrayInputStream.))
 
+(defn write-file
+  [value filename]
+  (with-open [w (clojure.java.io/writer filename)]
+    (binding [*print-length* false ;; don't cap print length
+              *out* w]
+      (pr value))))

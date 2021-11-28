@@ -43,3 +43,7 @@
    (throw (ex-info msg (anom-map name msg))))
   ([name msg cause]
    (throw (ex-info msg (anom-map name msg) cause))))
+
+(defn p<
+  ([x] (prn x) x)
+  ([msg x] (prn msg) (p< x)))

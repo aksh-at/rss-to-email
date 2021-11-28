@@ -11,7 +11,6 @@
 
 
 (defn get-subs-by-email
-  "Lambda ion that returns subs matching email."
   [{:keys [input]}]
   (-> (rustic/get-db)
       (rustic/get-subs-by-email (json/read-str input)

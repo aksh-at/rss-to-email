@@ -44,7 +44,7 @@
   [conn sub-id new-date]
   (d/transact conn {:tx-data [{:db/id sub-id, :sub/last-updated-date new-date}]}))
 
-(defn poll
+(defn poll-feed
   "Poll a URL, update last updated date in DB and send notification if updated."
   [conn email feed-url]
   (let [xml-content (xml/parse feed-url)
