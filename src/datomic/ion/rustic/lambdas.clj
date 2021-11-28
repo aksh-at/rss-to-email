@@ -4,6 +4,7 @@
    [datomic.ion.rustic :as rustic]
    [datomic.ion.rustic.edn :as edn]))
 
+
 (defn p<
   ([x] (prn x) x)
   ([msg x] (prn msg) (p< x)))
