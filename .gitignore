@@ -8,3 +8,6 @@ REBL-*.jar
 .lsp/
 .clj-kondo/
 .nrepl-port
+.DS_Store
+/frontend/node_modules
+/frontend/.next
