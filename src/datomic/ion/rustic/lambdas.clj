@@ -4,11 +4,16 @@
    [datomic.ion.rustic :as rustic]
    [datomic.ion.rustic.edn :as edn]))
 
+(defn p<
+  ([x] (prn x) x)
+  ([msg x] (prn msg) (p< x)))
+
+
 (defn get-subs-by-email
   "Lambda ion that returns subs matching email."
   [{:keys [input]}]
   (-> (rustic/get-db)
-      (rustic/get-subs-by-email (-> input json/read-str keyword)
+      (rustic/get-subs-by-email (json/read-str input)
                                 [:sub/email :sub/feed-url])
       edn/write-str))
 
