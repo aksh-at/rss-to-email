@@ -1,10 +1,13 @@
 (load-file "siderail/setup.repl")
+(require '[clojure.xml :as xml])
 
-(rustic/get-subs-by-email db "a2" [:sub/rss])
+(rustic/register-sub (db-utils/get-connection) "akshatb42@gmail.com" "https://aksh-at.github.io/index.xml")
+(lambdas/register-sub {:input (json/write-str {:email "a1", :feed-url "b1"}) })
+(println (rustic/get-subs-by-email db "akshatb42@gmail.com" [:sub/feed-url]))
+(println (lambdas/get-subs-by-email {:input (json/write-str "a1-x")}))
 
-(rustic/register-sub (db-utils/get-connection) "akshatb42@gmail.com2" "https://aksh-at.github.io/index.xml")
-(lambdas/register-sub {:input (json/write-str {:email "a2", :rss "b2"}) })
+;; (rustic/sub-exists (db-utils/get-db) "akshatb42@gmail.com" "https://aksh-at.github.io/index.xml")
 
-;; (find-rss-last-date "http://blog.sigfpe.com/rss.xml")
-(print (poller/find-rss-last-date "https://byorgey.wordpress.com/feed/"))
-(print (poller/find-atom-last-date "https://ruslanspivak.com/feeds/all.atom.xml"))
+;; (find-last-date "http://blog.sigfpe.com/feed-url.xml")
+(println (poller/find-last-date (xml/parse "https://byorgey.wordpress.com/feed/")))
+(println (poller/find-last-date (xml/parse "https://ruslanspivak.com/feeds/all.atom.xml")))

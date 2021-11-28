@@ -6,22 +6,22 @@
   [{:db/ident :sub/email
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :sub/rss
+   {:db/ident :sub/feed-url
     :db/valueType :db.type/string
     :db/cardinality :db.cardinality/one}
-   {:db/ident :sub/email+rss
+   {:db/ident :sub/email+feed-url
     :db/valueType :db.type/tuple
-    :db/tupleAttrs [:sub/email :sub/rss]
+    :db/tupleAttrs [:sub/email :sub/feed-url]
     :db/cardinality :db.cardinality/one
     :db/unique :db.unique/identity}
-   {:db/ident :sub/last-checked
+   {:db/ident :sub/last-updated-date
     :db/valueType :db.type/instant
     :db/cardinality :db.cardinality/one}])
 
 (def sample-sub
   {:sub/email "akshatb42@gmail.com"
-   :sub/rss "https://aksh-at.github.io/index.xml"
-   :sub/last-checked (new java.util.Date) })
+   :sub/feed-url "https://aksh-at.github.io/index.xml"
+   :sub/last-updated-date (new java.util.Date) })
 
 (defn- has-ident?
   [db ident]
@@ -30,7 +30,18 @@
 
 (defn- data-loaded?
   [db]
-  (has-ident? db :inv/sku))
+  (has-ident? db :sub/email))
+
+(defn find-sub
+  [db email feed-url]
+  (-> (d/q '[:find (pull ?e [:db/id :sub/email :sub/feed-url :sub/last-updated-date])
+             :in $ [?email ?feed-url]
+             :where
+             [?e :sub/email ?email]
+             [?e :sub/feed-url ?feed-url]]
+           db [email feed-url])
+      first
+      first))
 
 (defn load-schema
   [conn]
