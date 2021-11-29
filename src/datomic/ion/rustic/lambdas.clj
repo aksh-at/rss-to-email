@@ -5,11 +5,6 @@
    [datomic.ion.rustic.edn :as edn]))
 
 
-(defn p<
-  ([x] (prn x) x)
-  ([msg x] (prn msg) (p< x)))
-
-
 (defn get-subs-by-email
   [{:keys [input]}]
   (-> (rustic/get-db)

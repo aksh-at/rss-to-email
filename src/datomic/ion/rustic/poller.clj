@@ -39,9 +39,14 @@
     :feed (find-atom-last-date xml-content)
     (throw (Exception. "Unsupported feed type. Use RSS or Atom XML feed."))))
 
+
+;; todo this should take post content as well
+(defn notify [email] (println "notifying" email))
+
 (defn update-and-notify
   "First notify user by sending email, and then update last-updated-date in DB."
-  [conn sub-id new-date]
+  [conn email sub-id new-date]
+  (notify email)
   (d/transact conn {:tx-data [{:db/id sub-id, :sub/last-updated-date new-date}]}))
 
 (defn poll-feed
@@ -53,4 +58,4 @@
         new-updated-date (find-last-date xml-content)]
     (println sub-id last-updated-date new-updated-date)
     (when (or (nil? last-updated-date) (== -1 (compare last-updated-date new-updated-date)))
-      (update-and-notify conn sub-id new-updated-date))))
+      (update-and-notify conn email sub-id new-updated-date))))
