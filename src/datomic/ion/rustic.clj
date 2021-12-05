@@ -1,9 +1,12 @@
 (ns datomic.ion.rustic
   (:require
    [datomic.client.api :as d]
+   [datomic.ion.cast :as cast]
    [datomic.ion.rustic.poller :as poller]
    [datomic.ion.rustic.schema :as schema]
    [datomic.ion.rustic.db-utils :as db-utils]))
+
+(cast/initialize-redirect :stderr)
 
 (def get-db db-utils/get-db)
 
@@ -37,6 +40,7 @@
 
 (defn poll-all
   [conn]
+  (cast/event {:msg "Starting polling."})
   (let [db (d/db conn)
         all-subs (get-all-subs db)]
     (map #(poller/poll-feed conn %) all-subs)))

@@ -2,6 +2,7 @@
                                [clojure.instant :as instant]
                                [clojure.xml :as xml]
                                [datomic.client.api :as d]
+                               [datomic.ion.cast :as cast]
                                [datomic.ion.rustic.mailer :as mailer]
                                [datomic.ion.rustic.schema :as schema]
                                [datomic.ion.rustic.utils :as u]
@@ -69,16 +70,18 @@
                 {:tx-data
                  [[:db/retract sub-id :sub/last-updated-date last-updated-date]]})))
 
+
 (defn poll-feed
   "Poll a URL, update last updated date in DB and send notification if updated."
   [conn [email feed-url]]
-  (println (format "Polling %s %s..." email feed-url))
+  (cast/event {:msg (format "Polling %s %s..." email feed-url)})
   (try
     (let [xml-content (xml/parse feed-url)
           db (d/db conn)
           {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)
           new-posts (get-new-posts xml-content last-updated-date)]
-      (println (format "Found %d posts for %s" (count new-posts) feed-url))
+      (cast/event {:msg (format "Found %d posts for %s" (count new-posts) feed-url)})
       (when (< 0 (count new-posts))
         (update-and-notify conn email feed-url sub-id new-posts)))
-    (catch Exception e (println (str "caught exception: " (.getMessage e))))))
+    (catch Exception e
+      (cast/event {:msg "Caught exception" :ex e}))))

@@ -22,7 +22,6 @@
 
 (defn poll-all
   [{:keys [input]}]
-  (print "Starting poll...")
   (-> (rustic/get-connection)
       rustic/poll-all
       doall
