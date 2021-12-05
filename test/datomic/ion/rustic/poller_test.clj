@@ -63,7 +63,7 @@
       (t/testing "notifies when no last updated date"
         (reset-notify)
         (t/is (not (notified? email)))
-        (poller/poll-feed conn email rss-post)
+        (poller/poll-feed conn [email rss-post])
         (t/is (close-to-now?
                (:sub/last-updated-date (schema/find-sub (d/db conn)  email rss-post))))
         (t/is (notified? email)))
@@ -73,14 +73,14 @@
           (d/transact conn {:tx-data [{:db/id sub-id, :sub/last-updated-date past-date}]}))
         (reset-notify)
         (t/is (not (notified? email)))
-        (poller/poll-feed conn email rss-post)
+        (poller/poll-feed conn [email rss-post])
         (t/is (notified? email))
         (t/is (close-to-now?
                (:sub/last-updated-date (schema/find-sub (d/db conn)  email rss-post)))))
       (t/testing "doesn't notify when up to date"
         (reset-notify)
         (t/is (not (notified? email)))
-        (poller/poll-feed conn email rss-post)
+        (poller/poll-feed conn [email rss-post])
         (t/is (not (notified? email)))
         (t/is (close-to-now?
                (:sub/last-updated-date (schema/find-sub (d/db conn)  email rss-post))))))))

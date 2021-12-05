@@ -43,6 +43,7 @@
 (defn notify [email feed-url new-posts]
   (let [subject-line (format-subject-line feed-url new-posts)
         body (format-body feed-url new-posts)]
+    (println (format "Sending email to %s with subject %s..." email subject-line))
     (m/send-email client-opts
                   from-email
                   email

@@ -18,3 +18,9 @@
     (-> (rustic/get-connection)
         (rustic/register-sub email feed-url)
         edn/write-str)))
+
+
+(defn poll-all
+  []
+  (-> (rustic/get-connection)
+      rustic/poll-all))

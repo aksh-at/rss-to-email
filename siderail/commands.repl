@@ -14,4 +14,4 @@
 
 (poller/reset-last-updated (db-utils/get-connection) "akshatb42@gmail.com" "https://aksh-at.github.io/index.xml")
 
-(poller/poll-feed (db-utils/get-connection) "akshatb42@gmail.com" "https://aksh-at.github.io/index.xml")
+(poller/poll-feed (db-utils/get-connection) ["akshatb42@gmail.com" "https://aksh-at.github.io/index.xml"])

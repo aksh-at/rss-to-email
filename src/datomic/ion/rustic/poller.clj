@@ -73,10 +73,14 @@
 
 (defn poll-feed
   "Poll a URL, update last updated date in DB and send notification if updated."
-  [conn email feed-url]
-  (let [xml-content (xml/parse feed-url)
-        db (d/db conn)
-        {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)
-        new-posts (get-new-posts xml-content last-updated-date)]
-    (when (< 0 (count new-posts))
-      (update-and-notify conn email feed-url sub-id new-posts))))
+  [conn [email feed-url]]
+  (println (format "Polling %s %s..." email feed-url))
+  (try
+    (let [xml-content (xml/parse feed-url)
+          db (d/db conn)
+          {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)
+          new-posts (get-new-posts xml-content last-updated-date)]
+      (println (format "Found %d posts for %s" (count new-posts) feed-url))
+      (when (< 0 (count new-posts))
+        (update-and-notify conn email feed-url sub-id new-posts)))
+    (catch Exception e (println (str "caught exception: " (.getMessage e))))))

@@ -2,6 +2,6 @@
 
 (use '[clojure.test :as t])
 
-(use '[datomic.ion.rustic.poller-test :as pt])
+;; j(use '[datomic.ion.rustic.poller-test :as pt])
 
 (use '[datomic.ion.rustic.mailer-test :as mt])

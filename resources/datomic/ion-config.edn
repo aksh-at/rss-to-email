@@ -1,6 +1,9 @@
 {:lambdas {:get-subs-by-email
            {:fn datomic.ion.rustic.lambdas/get-subs-by-email
             :description "return subscriptions by email"}
+           :poll-all
+           {:fn datomic.ion.rustic.lambdas/poll-all
+            :description "poll all subscriptions"}
            :register-sub
            {:fn datomic.ion.rustic.lambdas/register-sub
             :description "register sub"}}

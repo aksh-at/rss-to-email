@@ -1,6 +1,7 @@
 (ns datomic.ion.rustic
   (:require
    [datomic.client.api :as d]
+   [datomic.ion.rustic.poller :as poller]
    [datomic.ion.rustic.schema :as schema]
    [datomic.ion.rustic.db-utils :as db-utils]))
 
@@ -26,7 +27,16 @@
   (when-not (sub-exists? (d/db conn) email feed-url)
     (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]})))
 
-(defn poll-subs
-  "Get last query time & see if there are any updates since then."
-  [conn email feed-url]
-  (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]}))
+(defn get-all-subs
+  [db]
+  (d/q
+   '[:find ?email ?sub
+     :where
+     [?x :sub/email ?email]
+     [?x :sub/feed-url ?sub]] db))
+
+(defn poll-all
+  [conn]
+  (let [db (d/db conn)
+        all-subs (get-all-subs db)]
+    (map #(poller/poll-feed conn %) all-subs)))
