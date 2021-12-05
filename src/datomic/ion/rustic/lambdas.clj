@@ -21,6 +21,6 @@
 
 
 (defn poll-all
-  [_]
-  (-> (rustic/get-connection)
-      rustic/poll-all))
+  [{:keys [input]}]
+  (rustic/poll-all (rustic/get-connection))
+  "done") ;; ion expects a return type.

@@ -8,7 +8,7 @@
 (defn find-tag [x input]
   (filter #(= (% :tag) x) input))
 
-(def from-email "no-reply@rssto.email")
+(def from-email "\"RSS To Email\" <no-reply@rssto.email>")
 
 (def client-opts {:provider (DefaultAWSCredentialsProviderChain.) :region :us-east-2})
 
