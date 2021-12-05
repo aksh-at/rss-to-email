@@ -27,6 +27,7 @@
 (defn register-sub
   "Creates sub for a given email and blog."
   [conn email feed-url]
+  (cast/event {:msg "Registering sub." :email email :feed-url feed-url})
   (when-not (sub-exists? (d/db conn) email feed-url)
     (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]})))
 
