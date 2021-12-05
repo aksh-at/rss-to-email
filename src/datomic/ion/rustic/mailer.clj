@@ -26,8 +26,14 @@
 
 (defn format-post [post]
   (let [title (->> post :content (find-tag :title) first :content first)
-        description (->> post :content (find-tag :description) first :content first)]
-    (format "<div><h1>%s</h1><p>%s</p></div>" title description)))
+        description (->> post :content (find-tag :description) first :content first)
+        link (->> post :content (find-tag :link) first :content first)]
+    (format
+     "<div><a href=%s><h1>%s</h1></a><p>%s <a href=%s>...</a> </p></div>"
+     link
+     title
+     description
+     link)))
 
 (defn format-body [feed-url new-posts]
   (let [formatted-posts (mapv format-post new-posts)
