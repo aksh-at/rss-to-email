@@ -21,6 +21,6 @@
 
 
 (defn poll-all
-  []
+  [_]
   (-> (rustic/get-connection)
       rustic/poll-all))
