@@ -65,8 +65,6 @@
   [conn email feed-url]
   (let [db (d/db conn)
         {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)]
-    (u/p< sub-id)
-    (u/p< last-updated-date)
     (d/transact conn
                 {:tx-data
                  [[:db/retract sub-id :sub/last-updated-date last-updated-date]]})))
