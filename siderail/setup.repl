@@ -6,10 +6,13 @@
  '[datomic.ion.rustic :as rustic]
  '[datomic.ion.rustic.edn :as s-edn]
  '[datomic.ion.rustic.lambdas :as lambdas]
+ '[datomic.ion.rustic.mailer :as mailer]
  '[datomic.ion.rustic.schema :as schema]
  '[datomic.ion.rustic.db-utils :as db-utils]
  '[datomic.ion.rustic.poller :as poller]
  '[datomic.ion.rustic.utils :as utils])
+
+(require '[clojure.tools.namespace.repl :refer [refresh]])
 
 ;; Edit resources/datomic/ion/rustic/config.edn to match your system
 

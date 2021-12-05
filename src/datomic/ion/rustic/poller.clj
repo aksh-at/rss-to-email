@@ -2,6 +2,7 @@
                                [clojure.instant :as instant]
                                [clojure.xml :as xml]
                                [datomic.client.api :as d]
+                               [datomic.ion.rustic.mailer :as mailer]
                                [datomic.ion.rustic.schema :as schema]
                                [datomic.ion.rustic.utils :as u]
                                [clj-time.core :as t]
@@ -53,16 +54,22 @@
     :feed (atom-new-posts xml-content last-updated-date)
     (throw (Exception. "Unsupported feed type. Use RSS or Atom XML feed."))))
 
-
-;; todo this should take post content as well
-(defn notify [email new-posts] (println "notifying" email))
-
 (defn update-and-notify
   "First notify user by sending email, and then update last-updated-date in DB."
-  [conn email sub-id new-posts]
-  (notify email new-posts)
+  [conn email feed-url sub-id new-posts]
+  (mailer/notify email feed-url new-posts)
   (def cur-date (tc/to-date (t/now)))
   (d/transact conn {:tx-data [{:db/id sub-id, :sub/last-updated-date cur-date}]}))
+
+(defn reset-last-updated
+  [conn email feed-url]
+  (let [db (d/db conn)
+        {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)]
+    (u/p< sub-id)
+    (u/p< last-updated-date)
+    (d/transact conn
+                {:tx-data
+                 [[:db/retract sub-id :sub/last-updated-date last-updated-date]]})))
 
 (defn poll-feed
   "Poll a URL, update last updated date in DB and send notification if updated."
@@ -72,4 +79,4 @@
         {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)
         new-posts (get-new-posts xml-content last-updated-date)]
     (when (< 0 (count new-posts))
-      (update-and-notify conn email sub-id new-posts))))
+      (update-and-notify conn email feed-url sub-id new-posts))))

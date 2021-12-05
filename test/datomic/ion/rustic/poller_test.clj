@@ -46,7 +46,7 @@
   (get @mem-notify (keyword email) false))
 
 (defn mock-notify
-  [email _]
+  [email _ _]
   (swap! mem-notify assoc (keyword email) true))
 
 (defn close-to-now? [start-time]
@@ -55,7 +55,7 @@
 
 (t/deftest poll-feed-tests
   (with-redefs [clojure.xml/parse                edn/read
-                datomic.ion.rustic.poller/notify mock-notify]
+                datomic.ion.rustic.mailer/notify mock-notify]
     (let
      [conn  (db-utils/get-connection)
       email "a1"]
