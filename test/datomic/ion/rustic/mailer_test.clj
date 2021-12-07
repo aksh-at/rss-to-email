@@ -25,17 +25,25 @@
                        :content
                        ["potato"]}]})
 
+(def no-content-no-desc-post {:tag :entry,
+                              :attrs nil,
+                              :content
+                              [{:tag :title, :attrs nil, :content ["stuff"]}
+                               {:tag :link,
+                                :attrs nil,
+                                :content ["abc.xyz"]}]})
+
 (def content-no-desc-post {:tag :entry,
-                   :attrs nil,
-                   :content
-                   [{:tag :title, :attrs nil, :content ["stuff"]}
-                    {:tag :link,
-                     :attrs nil,
-                     :content ["abc.xyz"]}
-                    {:tag :content,
-                     :attrs {:type "html"},
-                     :content
-                     ["potato"]}]})
+                           :attrs nil,
+                           :content
+                           [{:tag :title, :attrs nil, :content ["stuff"]}
+                            {:tag :link,
+                             :attrs nil,
+                             :content ["abc.xyz"]}
+                            {:tag :content,
+                             :attrs {:type "html"},
+                             :content
+                             ["potato"]}]})
 
 (def regular-post {:tag :entry,
                    :attrs nil,
@@ -68,6 +76,7 @@
 (t/deftest test-get-post-description
   (t/is (= (mailer/get-post-description regular-post) "potato"))
   (t/is (= (mailer/get-post-description content-no-desc-post) "potato")))
+  (t/is (= (mailer/get-post-description no-content-no-desc-post) ""))
 
 
 (t/deftest test-format-body
