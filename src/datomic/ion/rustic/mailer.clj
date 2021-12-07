@@ -24,10 +24,20 @@
           (count new-posts)
           (get-homepage-from-feed feed-url)))
 
+(defn get-post-title [post] (->> post :content (find-tag :title) first :content first))
+
+(defn get-post-description [post] (->> post :content (find-tag :description) first :content first))
+
+(defn get-post-link [post]
+  (let [block (->> post :content (find-tag :link) first)
+        content (->> block :content first)
+        attr (->> block :attrs :href)]
+    (or content attr)))
+
 (defn format-post [post]
-  (let [title (->> post :content (find-tag :title) first :content first)
-        description (->> post :content (find-tag :description) first :content first)
-        link (->> post :content (find-tag :link) first :content first)]
+  (let [title  (get-post-title post)
+        description (get-post-description post)
+        link (get-post-link post)]
     (format
      "<div><a href=%s><h1>%s</h1></a><p>%s <a href=%s>...</a> </p></div>"
      link
