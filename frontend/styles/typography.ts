@@ -32,7 +32,7 @@ const typography: TypographyOptions = Object.freeze({
     fontWeight: 500,
     lineHeight: 1.14,
   },
-  fontFamily: ["DM Mono", "Courier", "monospace"].join(","),
+  fontFamily: ["DM Mono", "monospace"].join(","),
   h1: {
     fontSize: 48,
     fontWeight: 500,

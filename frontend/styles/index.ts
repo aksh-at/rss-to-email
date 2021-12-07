@@ -9,11 +9,6 @@ export const muiTheme = responsiveFontSizes(
     {
       boxShadow,
       palette,
-      props: {
-        MuiButtonBase: {
-          disableRipple: true,
-        },
-      },
       spacing: (factor) => `${factor * 0.5}rem`,
       typography,
     },

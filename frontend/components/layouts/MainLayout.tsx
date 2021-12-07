@@ -12,12 +12,7 @@ export function MainLayout({
         <title>Create Next App</title>
       </Head>
 
-      <main>
-        <ThemeProvider theme={muiTheme}>
-          <CssBaseline />
-          {children}
-        </ThemeProvider>
-      </main>
+      <main>{children}</main>
 
       {/* <footer></footer> */}
     </>
