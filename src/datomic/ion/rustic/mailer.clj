@@ -26,7 +26,10 @@
 
 (defn get-post-title [post] (->> post :content (find-tag :title) first :content first))
 
-(defn get-post-description [post] (->> post :content (find-tag :description) first :content first))
+(defn get-post-description [post]
+  (let [description (->> post :content (find-tag :description) first :content first)
+        content (->> post :content (find-tag :content) first :content first)]
+    (or description content)))
 
 (defn get-post-link [post]
   (let [block (->> post :content (find-tag :link) first)

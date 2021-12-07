@@ -25,17 +25,29 @@
                        :content
                        ["potato"]}]})
 
-(def regular-link-post {:tag :entry,
-                        :attrs nil,
-                        :content
-                        [{:tag :title, :attrs nil, :content ["stuff"]}
-                         {:tag :link,
-                          :attrs nil,
-                          :content ["abc.xyz"]}
-                         {:tag :content,
-                          :attrs {:type "html"},
-                          :content
-                          ["potato"]}]})
+(def content-no-desc-post {:tag :entry,
+                   :attrs nil,
+                   :content
+                   [{:tag :title, :attrs nil, :content ["stuff"]}
+                    {:tag :link,
+                     :attrs nil,
+                     :content ["abc.xyz"]}
+                    {:tag :content,
+                     :attrs {:type "html"},
+                     :content
+                     ["potato"]}]})
+
+(def regular-post {:tag :entry,
+                   :attrs nil,
+                   :content
+                   [{:tag :title, :attrs nil, :content ["stuff"]}
+                    {:tag :link,
+                     :attrs nil,
+                     :content ["abc.xyz"]}
+                    {:tag :description,
+                     :attrs {:type "html"},
+                     :content
+                     ["potato"]}]})
 
 (t/deftest get-homepage-tests
   (t/testing "works w/ prefix"
@@ -50,8 +62,12 @@
   (t/is (= (mailer/format-subject-line "https://ab.xyz/index.xml" new-posts) "2 new updates from ab.xyz")))
 
 (t/deftest test-get-post-link
-  (t/is (= (mailer/get-post-link regular-link-post) "abc.xyz"))
+  (t/is (= (mailer/get-post-link regular-post) "abc.xyz"))
   (t/is (= (mailer/get-post-link attr-link-post) "abc.xyz")))
+
+(t/deftest test-get-post-description
+  (t/is (= (mailer/get-post-description regular-post) "potato"))
+  (t/is (= (mailer/get-post-description content-no-desc-post) "potato")))
 
 
 (t/deftest test-format-body
