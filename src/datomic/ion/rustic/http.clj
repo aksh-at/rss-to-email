@@ -31,11 +31,11 @@
 
 (defn register-sub
   [{:keys [headers body]}]
-  (let [{:keys [token feed]} (read-json-stream body)
+  (let [{:keys [token feed-url]} (read-json-stream body)
         {:keys [email]} (auth/decode-jwt-claim token)]
     (when (auth/valid-jwt? token)
       (-> (rustic/get-connection)
-          (rustic/register-sub email feed)
+          (rustic/register-sub email feed-url)
           edn/write-str
           edn-response))))
 
