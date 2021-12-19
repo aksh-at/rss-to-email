@@ -12,12 +12,6 @@
                                 [:sub/email :sub/feed-url])
       edn/write-str))
 
-(defn register-sub
-  [{:keys [input]}]
-  (let [{:keys [email feed-url]} (json/read-str input :key-fn keyword)]
-    (-> (rustic/get-connection)
-        (rustic/register-sub email feed-url)
-        edn/write-str)))
 
 
 (defn poll-all

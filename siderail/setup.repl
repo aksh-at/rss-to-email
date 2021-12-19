@@ -6,6 +6,7 @@
  '[datomic.ion.cast :as cast]
  '[datomic.ion.rustic :as rustic]
  '[datomic.ion.rustic.edn :as s-edn]
+ '[datomic.ion.rustic.http :as http]
  '[datomic.ion.rustic.lambdas :as lambdas]
  '[datomic.ion.rustic.mailer :as mailer]
  '[datomic.ion.rustic.schema :as schema]
