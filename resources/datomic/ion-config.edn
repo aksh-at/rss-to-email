@@ -1,7 +1,10 @@
 {:lambdas {:poll-all
            {:fn datomic.ion.rustic.lambdas/poll-all
-            :description "poll all subscriptions"}
+            :description "Poll all subscriptions."}
+           :request-sub
+           {:fn datomic.ion.rustic.http/request-sub-lambda-proxy
+            :description "Request new subscription."}
            :register-sub
            {:fn datomic.ion.rustic.http/register-sub-lambda-proxy
-            :description "register sub lambda proxy"}}
+            :description "Confirm subscription."}}
  :app-name "datomic-4"}

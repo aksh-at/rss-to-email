@@ -25,7 +25,7 @@
   [{:keys [headers body]}]
   (let [{:keys [email feed-url]} (read-json-stream body)]
     (-> (rustic/get-connection)
-        (rustic/register-sub email feed-url)
+        (rustic/request-sub email feed-url)
         edn/write-str
         edn-response)))
 
