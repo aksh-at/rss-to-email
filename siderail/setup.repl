@@ -5,6 +5,7 @@
  '[datomic.client.api :as d]
  '[datomic.ion.cast :as cast]
  '[datomic.ion.rustic :as rustic]
+ '[datomic.ion.rustic.auth :as auth]
  '[datomic.ion.rustic.edn :as s-edn]
  '[datomic.ion.rustic.http :as http]
  '[datomic.ion.rustic.lambdas :as lambdas]
