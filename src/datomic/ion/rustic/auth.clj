@@ -2,8 +2,9 @@
   (:require
    [datomic.ion :as ion]
    [clj-jwt.core  :refer :all]
+   [clj-jwt.intdate :refer [intdate->joda-time]]
    [clj-jwt.key   :refer [private-key public-key]]
-   [clj-time.core :refer [now plus days]]))
+   [clj-time.core :refer [now plus days before?]]))
 
 (. java.security.Security addProvider (org.bouncycastle.jce.provider.BouncyCastleProvider.))
 
@@ -25,11 +26,21 @@
   [email]
   (let
    [claim {:iss "rustic"
-           :sub email
+           :email email
            :exp (plus (now) (days 1))
            :iat (now)}]
     (-> claim jwt (sign :ES256 ec-prv-key) to-str)))
 
-(defn verify-jwt
+(defn valid-jwt?
   [token]
-  (-> token str->jwt (verify ec-pub-key)))
+  (let  [jwt (str->jwt token)
+         exp (-> jwt :claims :exp intdate->joda-time)]
+    (and
+     (verify jwt ec-pub-key)
+     (before? (now) exp))))
+
+(defn decode-jwt-claim
+  [token]
+  (-> token str->jwt :claims))
+
+

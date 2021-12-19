@@ -32,6 +32,18 @@
   [db]
   (has-ident? db :sub/email))
 
+(defn load-schema
+  [conn]
+  (let [db (d/db conn)]
+    (if (data-loaded? db)
+      :already-loaded
+      (let [xact #(d/transact conn {:tx-data %})]
+        (xact subscription-schema)
+        ;; (xact [sample-sub])
+        :loaded))))
+
+;; Helper functions for queries.
+
 (defn find-sub
   [db email feed-url]
   (-> (d/q '[:find (pull ?e [:db/id :sub/email :sub/feed-url :sub/last-updated-date])
@@ -43,12 +55,14 @@
       first
       first))
 
-(defn load-schema
-  [conn]
-  (let [db (d/db conn)]
-    (if (data-loaded? db)
-      :already-loaded
-      (let [xact #(d/transact conn {:tx-data %})]
-        (xact subscription-schema)
-        ;; (xact [sample-sub])
-        :loaded))))
+(defn sub-exists?
+  [db email feed-url]
+  (some? (find-sub db email feed-url)))
+
+(defn get-all-subs
+  [db]
+  (d/q
+   '[:find ?email ?sub
+     :where
+     [?x :sub/email ?email]
+     [?x :sub/feed-url ?sub]] db))

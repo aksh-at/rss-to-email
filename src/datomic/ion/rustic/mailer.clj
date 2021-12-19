@@ -5,12 +5,23 @@
    [clojure.string :as str])
   (:import (com.amazonaws.auth DefaultAWSCredentialsProviderChain)))
 
-(defn find-tag [x input]
-  (filter #(= (% :tag) x) input))
-
 (def from-email "\"RSS To Email\" <no-reply@rssto.email>")
 
 (def client-opts {:provider (DefaultAWSCredentialsProviderChain.) :region :us-east-2})
+
+(defn send-email
+  [to-email subject-line body]
+  (println (format "Sending email to %s with subject %s..." to-email subject-line))
+  (m/send-email client-opts
+                from-email
+                to-email
+                subject-line
+                {:html-body body}))
+
+;; Update notifications.
+
+(defn find-tag [x input]
+  (filter #(= (% :tag) x) input))
 
 (defn get-homepage-from-feed [feed-url]
   (let [tokens (str/split feed-url #"/")
@@ -19,7 +30,7 @@
       (get tokens 2)
       t1)))
 
-(defn format-subject-line [feed-url new-posts]
+(defn format-notify-subject-line [feed-url new-posts]
   (format "%d new updates from %s"
           (count new-posts)
           (get-homepage-from-feed feed-url)))
@@ -48,17 +59,37 @@
      description
      link)))
 
-(defn format-body [feed-url new-posts]
+(defn format-notify-body [feed-url new-posts]
   (let [formatted-posts (mapv format-post new-posts)
         joined-posts (str/join "\n" formatted-posts)]
     (format "<html>%s</html>" joined-posts)))
 
 (defn notify [email feed-url new-posts]
-  (let [subject-line (format-subject-line feed-url new-posts)
-        body (format-body feed-url new-posts)]
-    (println (format "Sending email to %s with subject %s..." email subject-line))
-    (m/send-email client-opts
-                  from-email
-                  email
-                  subject-line
-                  {:html-body body})))
+  (let [subject-line (format-notify-subject-line feed-url new-posts)
+        body (format-notify-body feed-url new-posts)]
+    (send-email email subject-line body)))
+
+;; Send subscription confirmation.
+
+(defn format-sub-conf-subject-line [feed-url]
+  (format "Confirm subscription to %s"
+          (get-homepage-from-feed feed-url)))
+
+; TODO: figure out a better way to format HTML templates & embed CSS
+
+(defn format-sub-conf-body [feed-url link]
+  (let [homepage (get-homepage-from-feed feed-url)]
+    (str/join "\n"
+              ["<html>"
+               (format "Confirm your subscription to %s:" homepage)
+               "<div style=\"display: flex; justify-content: center; \">"
+               (format "<a style=\"background-color: rgb(245, 167, 66); border: none; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; height: 42; line-height: 20px !important; padding: 10px 20px; text-align: center; color: rgb(0, 0, 0); text-decoration: none;\" class=\"button\" href=\"%s\">Confirm subscription</a>" link)
+               "</div>"
+               "</html>"])))
+
+(defn send-sub-confirmation [email feed-url link]
+  (let [subject-line (format-sub-conf-subject-line feed-url)
+        body (format-sub-conf-body feed-url link)]
+    (send-email email subject-line body)))
+
+;; Send manage confirmation.
