@@ -72,7 +72,12 @@
       [:a {:href link} "..."]]]))
 
 (defn format-notify-body [feed-url new-posts manage-link]
-  (html [:html (seq  (mapv post-html new-posts))]))
+  (html [:html
+         [:body
+          [:div (seq  (mapv post-html new-posts))]
+          [:div {:style  {:display "flex" :justify-content "center"}}
+           [:a {:href manage-link :style {:color "rgb(50,50,50)"}}
+            "Unsubscribe"]]]]))
 
 (defn notify [email feed-url new-posts]
   (let [manage-link (get-manage-link email)
@@ -95,10 +100,10 @@
                :cursor "pointer"
                :display "inline-block"
                :height "42px"
-               :line-height "20px !important"
+               :line-height "19!important"
                :padding "10px 20px"
                :text-align "center"
-               :color "rgb(0, 0, 0)"
+               :color "rgb(30, 30, 30)"
                :text-decoration "none"}
        :href link}
    label])
@@ -106,9 +111,10 @@
 (defn format-sub-conf-body [feed-url link]
   (let [homepage (get-homepage-from-feed feed-url)]
     (html [:html
-           [:div (format "Confirm your subscription to %s:" homepage)]
-           [:div {:style  {:display "flex" :justify-content "center"}}
-            (make-button link "Confirm subscription")]])))
+           [:body
+            [:div (format "Confirm your subscription to %s:" homepage)]
+            [:div {:style  {:display "flex" :justify-content "center"}}
+             (make-button link "Confirm subscription")]]])))
 
 (defn send-sub-confirmation [email feed-url]
   (let [link (get-register-link email feed-url)
@@ -124,10 +130,11 @@
 
 (defn format-manage-conf-body [num-subs link]
   (html [:html
-         [:div
-          (format "You have %d active subscriptions. Click here to manage your subscriptions:" num-subs)]
-         [:div {:style  {:display "flex" :justify-content "center"}}
-          (make-button link "Manage subscription")]]))
+         [:body
+          [:div
+           (format "You have %d active subscriptions. Click here to manage your subscriptions:" num-subs)]
+          [:div {:style  {:display "flex" :justify-content "center"}}
+           (make-button link "Manage subscription")]]]))
 
 (defn send-manage-confirmation [email num-subs]
   (let [link (get-manage-link email)

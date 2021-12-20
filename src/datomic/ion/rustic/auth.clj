@@ -27,7 +27,7 @@
   (let
    [claim {:iss "rustic"
            :email email
-           :exp (plus (now) (days 1))
+           :exp (plus (now) (days 14))
            :iat (now)}]
     (-> claim jwt (sign :ES256 ec-prv-key) to-str)))
 
