@@ -1,32 +1,35 @@
 (ns datomic.ion.rustic.http-test
   (:require
-   [clojure.edn :as edn]
-   [clojure.string :as str]
-   [clojure.test :as t]
    [clojure.data.json :as json]
-   [datomic.ion.rustic.test-fixtures :as tf]
-   [datomic.ion.rustic.db-utils :as db-utils]
+   [clojure.edn :as edn]
+   [clojure.test :as t]
+   [clojure.string :as str]
    [datomic.ion.rustic.http :as http]
-   [datomic.ion.rustic.lambdas :as lambdas]))
+   [datomic.ion.rustic.lambdas :as lambdas]
+   [datomic.ion.rustic.test-fixtures :as tf]))
 
 (tf/test-setup)
 
-(def mem-conf-sub (atom {}))
+(def mem-send-email (atom {}))
 
-(defn reset-conf-sub
+(defn mock-send-email
+  [email subject-line body]
+  (swap! mem-send-email assoc :email email :subject-line subject-line :body body))
+
+(defn get-token
   []
-  (reset! mem-conf-sub {}))
-
-(defn mock-conf-sub
-  [email feed-url link]
-  (swap! mem-conf-sub assoc :email email :feed-url feed-url :link link))
-
+  (->
+   @mem-send-email
+   (get :body)
+   (str/split #"token=")
+   last
+   (str/split #">")
+   first))
 
 (defn- register-and-get
   [email url]
   (http/request-sub {:body (char-array (json/write-str {:email email, :feed-url url}))})
-  (def link (get @mem-conf-sub :link))
-  (def token (last (str/split link #"=")))
+  (def token (get-token))
   (http/register-sub {:body (char-array (json/write-str {:token token, :feed-url url}))})
   (->> {:input (json/write-str email)}
        (lambdas/get-subs-by-email)
@@ -35,7 +38,7 @@
        doall))
 
 (t/deftest subs-tests
-  (with-redefs [datomic.ion.rustic.mailer/send-sub-confirmation mock-conf-sub]
+  (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
     (t/testing "register subs works"
       (t/is (= (register-and-get "abc" "f1") [[#:sub{:email "abc", :feed-url "f1"}]])
             (t/is (= (register-and-get "abc" "f2") [[#:sub{:email "abc", :feed-url "f1"}] [#:sub{:email "abc", :feed-url "f2"}]]))))))

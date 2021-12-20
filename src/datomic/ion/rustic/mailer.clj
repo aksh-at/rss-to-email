@@ -1,4 +1,5 @@
 (ns datomic.ion.rustic.mailer
+  (:use [hiccup.core])
   (:require
    [ses-mailer.core :as m]
    [datomic.ion.rustic.auth :as auth]
@@ -61,21 +62,17 @@
         attr (->> block :attrs :href)]
     (or content attr)))
 
-(defn format-post [post]
+(defn post-html [post]
   (let [title  (get-post-title post)
         description (get-post-description post)
         link (get-post-link post)]
-    (format
-     "<div><a href=%s><h1>%s</h1></a><p>%s <a href=%s>...</a> </p></div>"
-     link
-     title
-     description
-     link)))
+    [:div
+     [:a {:href link} [:h1 title]]
+     [:p description
+      [:a {:href link} "..."]]]))
 
 (defn format-notify-body [feed-url new-posts manage-link]
-  (let [formatted-posts (mapv format-post new-posts)
-        joined-posts (str/join "\n" formatted-posts)]
-    (format "<html>%s</html>" joined-posts)))
+  (html [:html (seq  (mapv post-html new-posts))]))
 
 (defn notify [email feed-url new-posts]
   (let [manage-link (get-manage-link email)
