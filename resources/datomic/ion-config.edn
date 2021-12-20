@@ -1,6 +1,9 @@
 {:lambdas {:poll-all
            {:fn datomic.ion.rustic.lambdas/poll-all
             :description "Poll all subscriptions."}
+           :request-manage
+           {:fn datomic.ion.rustic.http/request-manage-lambda-proxy
+            :description "Request magic link to manage existing subscriptions."}
            :request-sub
            {:fn datomic.ion.rustic.http/request-sub-lambda-proxy
             :description "Request new subscription."}

@@ -2,7 +2,6 @@
   (:require
    [datomic.client.api :as d]
    [datomic.ion.cast :as cast]
-   [datomic.ion.rustic.auth :as auth]
    [datomic.ion.rustic.mailer :as mailer]
    [datomic.ion.rustic.poller :as poller]
    [datomic.ion.rustic.schema :as schema]
@@ -23,15 +22,19 @@
          :where [?e :sub/email ?email]]
        db email pull-expr))
 
+(defn request-manage
+  [conn email]
+  (cast/event {:msg "Requesting manage." :email email})
+  (def num-subs (count (get-subs-by-email (d/db conn) email [:sub/feed-url])))
+  (mailer/send-manage-confirmation email num-subs))
+
 ;; Register new sub
 
 (defn request-sub
   [conn email feed-url]
   (cast/event {:msg "Requesting sub." :email email :feed-url feed-url})
   (when-not (schema/sub-exists? (d/db conn) email feed-url)
-    (def token (auth/create-jwt email))
-    (def link (format "https://rssto.email/register?feed=%s&token=%s" feed-url token))
-    (mailer/send-sub-confirmation email feed-url link)))
+    (mailer/send-sub-confirmation email feed-url)))
 
 (defn register-sub
   [conn email feed-url]

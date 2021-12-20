@@ -9,6 +9,7 @@
         clj-time/clj-time {:mvn/version "0.15.2"}
         org.clojure/tools.namespace {:mvn/version "1.1.0"}
         mockery/mockery {:mvn/version "0.1.4"}
+        hiccup/hiccup {:mvn/version "1.0.5"}
         ses-mailer/ses-mailer {:mvn/version "0.0.4"}}
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
              "cognitect-dev-tools" {:url "https://dev-tools.cognitect.com/maven/releases/"}}

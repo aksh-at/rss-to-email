@@ -1,11 +1,24 @@
 (ns datomic.ion.rustic.mailer
   (:require
    [ses-mailer.core :as m]
+   [datomic.ion.rustic.auth :as auth]
    [datomic.ion.rustic.utils :as u]
    [clojure.string :as str])
   (:import (com.amazonaws.auth DefaultAWSCredentialsProviderChain)))
 
+;; Constants.
+
 (def from-email "\"RSS To Email\" <no-reply@rssto.email>")
+
+(defn get-manage-link
+  [email]
+  (format "https://rssto.email/manage?token=%s" (auth/create-jwt email)))
+
+(defn get-register-link
+  [email feed-url]
+  (format "https://rssto.email/register?feed=%s&token=%s" feed-url (auth/create-jwt email)))
+
+;; Helpers.
 
 (def client-opts {:provider (DefaultAWSCredentialsProviderChain.) :region :us-east-2})
 
@@ -59,14 +72,15 @@
      description
      link)))
 
-(defn format-notify-body [feed-url new-posts]
+(defn format-notify-body [feed-url new-posts manage-link]
   (let [formatted-posts (mapv format-post new-posts)
         joined-posts (str/join "\n" formatted-posts)]
     (format "<html>%s</html>" joined-posts)))
 
 (defn notify [email feed-url new-posts]
-  (let [subject-line (format-notify-subject-line feed-url new-posts)
-        body (format-notify-body feed-url new-posts)]
+  (let [manage-link (get-manage-link email)
+        subject-line (format-notify-subject-line feed-url new-posts)
+        body (format-notify-body feed-url new-posts manage-link)]
     (send-email email subject-line body)))
 
 ;; Send subscription confirmation.
@@ -87,9 +101,31 @@
                "</div>"
                "</html>"])))
 
-(defn send-sub-confirmation [email feed-url link]
-  (let [subject-line (format-sub-conf-subject-line feed-url)
+(defn send-sub-confirmation [email feed-url]
+  (let [link (get-register-link email feed-url)
+        subject-line (format-sub-conf-subject-line feed-url)
         body (format-sub-conf-body feed-url link)]
     (send-email email subject-line body)))
 
 ;; Send manage confirmation.
+
+(defn format-manage-conf-subject-line [feed-url]
+  (format "Confirm subscription to %s"
+          (get-homepage-from-feed feed-url)))
+
+; TODO: figure out a better way to format HTML templates & embed CSS
+
+(defn format-manage-conf-body [num-subs link]
+  (str/join "\n"
+            ["<html>"
+             (format "You have %d active subscriptions. Click here to manage your subscriptions:" num-subs)
+             "<div style=\"display: flex; justify-content: center; \">"
+             (format "<a style=\"background-color: rgb(245, 167, 66); border: none; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; height: 42; line-height: 20px !important; padding: 10px 20px; text-align: center; color: rgb(0, 0, 0); text-decoration: none;\" class=\"button\" href=\"%s\">Manage subscription</a>" link)
+             "</div>"
+             "</html>"]))
+
+(defn send-manage-confirmation [email num-subs]
+  (let [link (get-manage-link email)
+        subject-line (format-manage-conf-subject-line)
+        body (format-manage-conf-body num-subs link)]
+    (send-email email subject-line body)))

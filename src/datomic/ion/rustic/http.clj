@@ -21,6 +21,14 @@
 
 ;; Definitions
 
+(defn request-manage
+  [{:keys [headers body]}]
+  (let [{:keys [email feed-url]} (read-json-stream body)]
+    (-> (rustic/get-connection)
+        (rustic/request-manage email)
+        edn/write-str
+        edn-response)))
+
 (defn request-sub
   [{:keys [headers body]}]
   (let [{:keys [email feed-url]} (read-json-stream body)]
@@ -40,6 +48,9 @@
           edn-response))))
 
 ;; Ionized proxies
+
+(def request-manage-lambda-proxy
+  (apigw/ionize request-manage))
 
 (def request-sub-lambda-proxy
   (apigw/ionize request-sub))
