@@ -29,7 +29,9 @@
 (defn- register-and-get
   [email url]
   (http/request-sub {:body (char-array (json/write-str {:email email, :feed-url url}))})
+  ;; (println (get @mem-send-email :body))
   (def token (get-token))
+  ;; (println token)
   (http/register-sub {:body (char-array (json/write-str {:token token, :feed-url url}))})
   (->> {:input (json/write-str email)}
        (lambdas/get-subs-by-email)

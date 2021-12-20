@@ -86,17 +86,29 @@
   (format "Confirm subscription to %s"
           (get-homepage-from-feed feed-url)))
 
-; TODO: figure out a better way to format HTML templates & embed CSS
+(defn make-button
+  [link label]
+  [:a {:style {:background-color "rgb(245, 167, 66)"
+               :border "none"
+               :border-radius "4px"
+               :box-sizing "border-box"
+               :cursor "pointer"
+               :display "inline-block"
+               :height "42px"
+               :line-height "20px !important"
+               :padding "10px 20px"
+               :text-align "center"
+               :color "rgb(0, 0, 0)"
+               :text-decoration "none"}
+       :href link}
+   label])
 
 (defn format-sub-conf-body [feed-url link]
   (let [homepage (get-homepage-from-feed feed-url)]
-    (str/join "\n"
-              ["<html>"
-               (format "Confirm your subscription to %s:" homepage)
-               "<div style=\"display: flex; justify-content: center; \">"
-               (format "<a style=\"background-color: rgb(245, 167, 66); border: none; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; height: 42; line-height: 20px !important; padding: 10px 20px; text-align: center; color: rgb(0, 0, 0); text-decoration: none;\" class=\"button\" href=\"%s\">Confirm subscription</a>" link)
-               "</div>"
-               "</html>"])))
+    (html [:html
+           [:div (format "Confirm your subscription to %s:" homepage)]
+           [:div {:style  {:display "flex" :justify-content "center"}}
+            (make-button link "Confirm subscription")]])))
 
 (defn send-sub-confirmation [email feed-url]
   (let [link (get-register-link email feed-url)
@@ -110,16 +122,12 @@
   (format "Confirm subscription to %s"
           (get-homepage-from-feed feed-url)))
 
-; TODO: figure out a better way to format HTML templates & embed CSS
-
 (defn format-manage-conf-body [num-subs link]
-  (str/join "\n"
-            ["<html>"
-             (format "You have %d active subscriptions. Click here to manage your subscriptions:" num-subs)
-             "<div style=\"display: flex; justify-content: center; \">"
-             (format "<a style=\"background-color: rgb(245, 167, 66); border: none; border-radius: 4px; box-sizing: border-box; cursor: pointer; display: inline-block; height: 42; line-height: 20px !important; padding: 10px 20px; text-align: center; color: rgb(0, 0, 0); text-decoration: none;\" class=\"button\" href=\"%s\">Manage subscription</a>" link)
-             "</div>"
-             "</html>"]))
+  (html [:html
+         [:div
+          (format "You have %d active subscriptions. Click here to manage your subscriptions:" num-subs)]
+         [:div {:style  {:display "flex" :justify-content "center"}}
+          (make-button link "Manage subscription")]]))
 
 (defn send-manage-confirmation [email num-subs]
   (let [link (get-manage-link email)
