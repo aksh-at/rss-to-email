@@ -12,7 +12,10 @@
 (defn edn-response
   [body]
   {:status 200
-   :headers {"Content-Type" "application/edn"}
+   :headers {"Content-Type" "application/edn"
+             "Access-Control-Allow-Headers" "Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token"
+             "Access-Control-Allow-Origin" "*"
+             "Access-Control-Allow-Methods" "OPTIONS,POST,GET"}
    :body body})
 
 (defn read-json-stream
