@@ -6,8 +6,7 @@
 
 (defn with-db [f]
   (db-utils/load-schemas)
-  (f)
-  (db-utils/delete-db))
+  (f))
 
 (defn test-setup []
 ;; this is so scary

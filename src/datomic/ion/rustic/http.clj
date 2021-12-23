@@ -2,6 +2,7 @@
   (:require
    [clojure.java.io :as io]
    [clojure.data.json :as json]
+   [datomic.ion.cast :as cast]
    [datomic.ion.rustic :as rustic]
    [datomic.ion.rustic.auth :as auth]
    [datomic.ion.rustic.edn :as edn]
@@ -32,6 +33,16 @@
         edn/write-str
         edn-response)))
 
+(defn get-current-subs
+  [{:keys [headers body]}]
+  (let [{:keys [token]} (read-json-stream body)
+        {:keys [email]} (auth/decode-jwt-claim token)]
+    (when (auth/valid-jwt? token)
+      (-> (rustic/get-connection)
+          (rustic/get-subs-by-email email [:sub/email :sub/feed-url])
+          edn/write-str
+          edn-response))))
+
 (defn request-sub
   [{:keys [headers body]}]
   (let [{:keys [email feed-url]} (read-json-stream body)]
@@ -42,8 +53,9 @@
 
 (defn register-sub
   [{:keys [headers body]}]
-  (let [{:keys [token feed-url]} (read-json-stream body)
-        {:keys [email]} (auth/decode-jwt-claim token)]
+  (let [{:keys [token feed-url]} (read-json-stream body)]
+    (cast/event {:msg "Registering sub." :token token :feed-url feed-url})
+    (def email (:email (auth/decode-jwt-claim token)))
     (when (auth/valid-jwt? token)
       (-> (rustic/get-connection)
           (rustic/register-sub email feed-url)
@@ -54,6 +66,9 @@
 
 (def request-manage-lambda-proxy
   (apigw/ionize request-manage))
+
+(def get-current-subs-lambda-proxy
+  (apigw/ionize get-current-subs))
 
 (def request-sub-lambda-proxy
   (apigw/ionize request-sub))

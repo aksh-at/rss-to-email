@@ -23,7 +23,7 @@
   []
   (d/db (get-connection)))
 
-(defn delete-db [] (d/delete-database (get-client) {:db-name database-name}))
+;; (defn delete-db [] (d/delete-database (get-client) {:db-name database-name}))
 
 (defn load-schemas
   "Load the schemas and create db."
