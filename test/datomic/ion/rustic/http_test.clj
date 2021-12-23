@@ -42,5 +42,5 @@
 (t/deftest subs-tests
   (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
     (t/testing "register subs works"
-      (t/is (= (register-and-get "abc" "f1") [[#:sub{:email "abc", :feed-url "f1"}]])
-            (t/is (= (register-and-get "abc" "f2") [[#:sub{:email "abc", :feed-url "f1"}] [#:sub{:email "abc", :feed-url "f2"}]]))))))
+      (t/is (= (register-and-get "abc" "f1") [[#:sub{:email "abc", :feed-url "f1"}]]))
+      (t/is (= (register-and-get "abc" "f2") [[#:sub{:email "abc", :feed-url "f1"}] [#:sub{:email "abc", :feed-url "f2"}]])))))
