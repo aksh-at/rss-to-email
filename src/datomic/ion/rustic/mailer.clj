@@ -100,7 +100,7 @@
                :cursor "pointer"
                :display "inline-block"
                :height "42px"
-               :line-height "19!important"
+               :line-height "19px !important"
                :padding "10px 20px"
                :text-align "center"
                :color "rgb(30, 30, 30)"
