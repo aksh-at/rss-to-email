@@ -124,17 +124,15 @@
 
 ;; Send manage confirmation.
 
-(defn format-manage-conf-subject-line [feed-url]
-  (format "Confirm subscription to %s"
-          (get-homepage-from-feed feed-url)))
+(defn format-manage-conf-subject-line [] "Manage your subscriptions")
 
 (defn format-manage-conf-body [num-subs link]
   (html [:html
          [:body
           [:div
-           (format "You have %d active subscriptions. Click here to manage your subscriptions:" num-subs)]
+           (format "You have %d active subscriptions. Click here to manage:" num-subs)]
           [:div {:style  {:display "flex" :justify-content "center"}}
-           (make-button link "Manage subscription")]]]))
+           (make-button link "Manage subscriptions")]]]))
 
 (defn send-manage-confirmation [email num-subs]
   (let [link (get-manage-link email)
