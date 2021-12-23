@@ -48,7 +48,6 @@
   (let [{:keys [email feed-url]} (read-json-stream body)]
     (-> (rustic/get-connection)
         (rustic/request-sub email feed-url)
-        edn/write-str
         edn-response)))
 
 (defn register-sub
@@ -56,11 +55,11 @@
   (let [{:keys [token feed-url]} (read-json-stream body)]
     (cast/event {:msg "Registering sub." :token token :feed-url feed-url})
     (def email (:email (auth/decode-jwt-claim token)))
-    (when (auth/valid-jwt? token)
+    (if (auth/valid-jwt? token)
       (-> (rustic/get-connection)
           (rustic/register-sub email feed-url)
-          edn/write-str
-          edn-response))))
+          edn-response)
+      (edn-response {:status :INVALID}))))
 
 ;; Ionized proxies
 

@@ -33,14 +33,20 @@
 (defn request-sub
   [conn email feed-url]
   (cast/event {:msg "Requesting sub." :email email :feed-url feed-url})
-  (when-not (schema/sub-exists? (d/db conn) email feed-url)
-    (mailer/send-sub-confirmation email feed-url)))
+  (if (schema/sub-exists? (d/db conn) email feed-url)
+    {:status :EXISTS}
+    (do
+      (mailer/send-sub-confirmation email feed-url)
+      {:status :OK})))
 
 (defn register-sub
   [conn email feed-url]
   (cast/event {:msg "Registering sub." :email email :feed-url feed-url})
-  (when-not (schema/sub-exists? (d/db conn) email feed-url)
-    (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]})))
+  (if (schema/sub-exists? (d/db conn) email feed-url)
+    {:status :EXISTS}
+    (do
+      (d/transact conn {:tx-data [{:sub/email email, :sub/feed-url feed-url}]})
+      {:status :OK})))
 
 ;; Poller
 
