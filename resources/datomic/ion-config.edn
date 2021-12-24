@@ -7,6 +7,9 @@
            :get-current-subs
            {:fn datomic.ion.rustic.http/get-current-subs-lambda-proxy
             :description "Get all subs given a token."}
+           :unsubscribe
+           {:fn datomic.ion.rustic.http/unsubscribe-lambda-proxy
+            :description "Unsubscribe."}
            :request-sub
            {:fn datomic.ion.rustic.http/request-sub-lambda-proxy
             :description "Request new subscription."}
