@@ -66,3 +66,19 @@
      :where
      [?x :sub/email ?email]
      [?x :sub/feed-url ?sub]] db))
+
+(defn reset-last-updated
+  [conn email feed-url]
+  (let [db (d/db conn)
+        {sub-id :db/id last-updated-date :sub/last-updated-date} (find-sub db email feed-url)]
+    (d/transact conn
+                {:tx-data
+                 [[:db/retract sub-id :sub/last-updated-date last-updated-date]]})))
+
+(defn remove-sub
+  [conn email feed-url]
+  (let [db (d/db conn)
+        {sub-id :db/id} (find-sub db email feed-url)]
+    (d/transact conn
+                {:tx-data
+                 [[:db/retractEntity sub-id]]})))

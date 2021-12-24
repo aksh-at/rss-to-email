@@ -28,6 +28,11 @@
   (def num-subs (count (get-subs-by-email (d/db conn) email [:sub/feed-url])))
   (mailer/send-manage-confirmation email num-subs))
 
+(defn unsubscribe
+  [conn email feed-url]
+  (cast/event {:msg "Unsubscribing." :email email :feed-url feed-url})
+  (schema/remove-sub conn email feed-url))
+
 ;; Register new sub
 
 (defn request-sub

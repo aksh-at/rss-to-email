@@ -63,14 +63,6 @@
   (def cur-date (tc/to-date (t/now)))
   (d/transact conn {:tx-data [{:db/id sub-id, :sub/last-updated-date cur-date}]}))
 
-(defn reset-last-updated
-  [conn email feed-url]
-  (let [db (d/db conn)
-        {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)]
-    (d/transact conn
-                {:tx-data
-                 [[:db/retract sub-id :sub/last-updated-date last-updated-date]]})))
-
 (defn get-xml [feed-url]
   (try
     (xml/parse feed-url)

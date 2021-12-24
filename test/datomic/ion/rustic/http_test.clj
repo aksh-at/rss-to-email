@@ -59,9 +59,19 @@
         (sort-by #(-> % first :sub/feed-url))
         doall))
 
+(defn- unsub
+  [email feed-url]
+  (http/request-manage {:body (char-array (json/write-str {:email email}))})
+  (def token (get-token))
+  (http/unsubscribe {:body (char-array (json/write-str {:token token :feed-url feed-url}))}))
+
 (t/deftest manage-tests
   (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
     (t/testing "manage subs works"
       (register-and-get "user2" "f1")
       (register-and-get "user2" "f2")
-      (t/is (= (get-subs "user2") [[#:sub{:email "user2", :feed-url "f1"}] [#:sub{:email "user2", :feed-url "f2"}]])))))
+      (t/is (= (get-subs "user2") [[#:sub{:email "user2", :feed-url "f1"}] [#:sub{:email "user2", :feed-url "f2"}]]))
+      (register-and-get "user2" "f3")
+      (t/is (= (get-subs "user2") [[#:sub{:email "user2", :feed-url "f1"}] [#:sub{:email "user2", :feed-url "f2"}] [#:sub{:email "user2", :feed-url "f3"}]]))
+      (unsub "user2" "f2")
+      (t/is (= (get-subs "user2") [[#:sub{:email "user2", :feed-url "f1"}] [#:sub{:email "user2", :feed-url "f3"}]])))))

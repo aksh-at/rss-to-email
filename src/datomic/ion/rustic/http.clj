@@ -43,6 +43,16 @@
           edn/write-str
           edn-response))))
 
+(defn unsubscribe
+  [{:keys [headers body]}]
+  (let [{:keys [token feed-url]} (read-json-stream body)
+        {:keys [email]} (auth/decode-jwt-claim token)]
+    (when (auth/valid-jwt? token)
+      (-> (rustic/get-connection)
+          (rustic/unsubscribe email feed-url)
+          edn/write-str
+          edn-response))))
+
 (defn request-sub
   [{:keys [headers body]}]
   (let [{:keys [email feed-url]} (read-json-stream body)]
@@ -72,6 +82,9 @@
 
 (def get-current-subs-lambda-proxy
   (apigw/ionize get-current-subs))
+
+(def unsubscribe-lambda-proxy
+  (apigw/ionize unsubscribe))
 
 (def request-sub-lambda-proxy
   (apigw/ionize request-sub))
