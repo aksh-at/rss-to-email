@@ -56,6 +56,7 @@
         http/get-current-subs
         :body
         edn/read-string
+        :subs
         (sort-by #(-> % first :sub/feed-url))
         doall))
 

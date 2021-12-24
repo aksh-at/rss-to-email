@@ -21,10 +21,11 @@
         all-subs  (schema/get-subs-by-email db email [:sub/email :sub/feed-url])]
     {:subs all-subs :email email}))
 
+
 (defn request-manage
   [conn email]
   (cast/event {:msg "Requesting manage." :email email})
-  (def num-subs (count (get-subs-by-email (d/db conn) email [:sub/feed-url])))
+  (def num-subs (count (get-subs-by-email conn email)))
   (mailer/send-manage-confirmation email num-subs))
 
 (defn unsubscribe
