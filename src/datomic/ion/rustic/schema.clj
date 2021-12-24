@@ -67,6 +67,13 @@
      [?x :sub/email ?email]
      [?x :sub/feed-url ?sub]] db))
 
+(defn get-subs-by-email
+  [db email pull-expr]
+  (d/q '[:find (pull ?e pull-expr)
+         :in $ ?email pull-expr
+         :where [?e :sub/email ?email]]
+       db email pull-expr))
+
 (defn reset-last-updated
   [conn email feed-url]
   (let [db (d/db conn)

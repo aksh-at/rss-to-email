@@ -38,8 +38,8 @@
   (let [{:keys [token]} (read-json-stream body)
         {:keys [email]} (auth/decode-jwt-claim token)]
     (when (auth/valid-jwt? token)
-      (-> (rustic/get-db)
-          (rustic/get-subs-by-email email [:sub/email :sub/feed-url])
+      (-> (rustic/get-connection)
+          (rustic/get-subs-by-email email)
           edn/write-str
           edn-response))))
 

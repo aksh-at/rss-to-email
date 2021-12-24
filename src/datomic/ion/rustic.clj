@@ -16,11 +16,10 @@
 ;; Manage existing subs
 
 (defn get-subs-by-email
-  [db email pull-expr]
-  (d/q '[:find (pull ?e pull-expr)
-         :in $ ?email pull-expr
-         :where [?e :sub/email ?email]]
-       db email pull-expr))
+  [conn email]
+  (let [db (d/db conn)
+        all-subs  (schema/get-subs-by-email db email [:sub/email :sub/feed-url])]
+    {:subs all-subs :email email}))
 
 (defn request-manage
   [conn email]
