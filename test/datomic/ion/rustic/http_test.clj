@@ -4,6 +4,7 @@
    [clojure.edn :as edn]
    [clojure.test :as t]
    [clojure.string :as str]
+   [datomic.ion.rustic.utils :as u]
    [datomic.ion.rustic.http :as http]
    [datomic.ion.rustic.lambdas :as lambdas]
    [datomic.ion.rustic.test-fixtures :as tf]))
@@ -42,5 +43,25 @@
 (t/deftest subs-tests
   (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
     (t/testing "register subs works"
-      (t/is (= (register-and-get "abc" "f1") [[#:sub{:email "abc", :feed-url "f1"}]]))
-      (t/is (= (register-and-get "abc" "f2") [[#:sub{:email "abc", :feed-url "f1"}] [#:sub{:email "abc", :feed-url "f2"}]])))))
+      (t/is (= (register-and-get "user1" "f1") [[#:sub{:email "user1", :feed-url "f1"}]]))
+      (t/is (= (register-and-get "user1" "f2") [[#:sub{:email "user1", :feed-url "f1"}] [#:sub{:email "user1", :feed-url "f2"}]])))))
+
+(defn- get-subs
+  [email]
+  (http/request-manage {:body (char-array (json/write-str {:email email}))})
+  ;; (println (get @mem-send-email :body))
+  (def token (get-token))
+  ;; (println token)
+  (->>  {:body (char-array (json/write-str {:token token}))}
+        http/get-current-subs
+        :body
+        edn/read-string
+        (sort-by #(-> % first :sub/feed-url))
+        doall))
+
+(t/deftest manage-tests
+  (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
+    (t/testing "manage subs works"
+      (register-and-get "user2" "f1")
+      (register-and-get "user2" "f2")
+      (t/is (= (get-subs "user2") [[#:sub{:email "user2", :feed-url "f1"}] [#:sub{:email "user2", :feed-url "f2"}]])))))

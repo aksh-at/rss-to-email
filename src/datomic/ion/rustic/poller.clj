@@ -6,6 +6,7 @@
                                [datomic.ion.rustic.mailer :as mailer]
                                [datomic.ion.rustic.schema :as schema]
                                [datomic.ion.rustic.utils :as u]
+                               [clj-http.client :as client]
                                [clj-time.core :as t]
                                [clj-time.format :as tf]
                                [clj-time.coerce :as tc]))
@@ -70,13 +71,23 @@
                 {:tx-data
                  [[:db/retract sub-id :sub/last-updated-date last-updated-date]]})))
 
+(defn get-xml [feed-url]
+  (try
+    (xml/parse feed-url)
+    (catch Exception e
+      (-> feed-url
+          client/get
+          :body
+          .getBytes
+          java.io.ByteArrayInputStream.
+          xml/parse))))
 
 (defn poll-feed
   "Poll a URL, update last updated date in DB and send notification if updated."
   [conn [email feed-url]]
   (cast/event {:msg (format "Polling %s %s..." email feed-url)})
   (try
-    (let [xml-content (xml/parse feed-url)
+    (let [xml-content (get-xml feed-url)
           db (d/db conn)
           {sub-id :db/id last-updated-date :sub/last-updated-date} (schema/find-sub db email feed-url)
           new-posts (get-new-posts xml-content last-updated-date)]

@@ -4,4 +4,8 @@
 
 ;; j(use '[datomic.ion.rustic.poller-test :as pt])
 
-(use '[datomic.ion.rustic.mailer-test :as mt])
+(use '[datomic.ion.rustic.http-test :as ht])
+
+;; (t/test-vars [#'datomic.ion.rustic.http-test/subs-tests])
+
+
