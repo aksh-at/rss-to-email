@@ -32,6 +32,29 @@
                 subject-line
                 {:html-body body}))
 
+(defn make-button
+  [link label]
+  [:a {:style {:background-color "rgb(245, 167, 66)"
+               :border "none"
+               :border-radius "4px"
+               :box-sizing "border-box"
+               :cursor "pointer"
+               :display "inline-block"
+               :height "42px"
+               :line-height "19px !important"
+               :padding "10px 20px"
+               :text-align "center"
+               :color "rgb(30, 30, 30)"
+               :text-decoration "none"}
+       :href link}
+   label])
+
+(defn make-email-body [rows]
+  (html [:html
+         [:body {:style {:margin "0" :padding "0"}}
+          [:table {:border "0" :cellpadding "0" :cellspacing "0" :width "100%"}
+           (seq rows)]]]))
+
 ;; Update notifications.
 
 (defn find-tag [x input]
@@ -72,12 +95,11 @@
       [:a {:href link} "..."]]]))
 
 (defn format-notify-body [feed-url new-posts manage-link]
-  (html [:html
-         [:body
-          [:div (seq  (mapv post-html new-posts))]
-          [:div {:style  {:display "flex" :justify-content "center"}}
-           [:a {:href manage-link :style {:color "rgb(50,50,50)"}}
-            "Unsubscribe"]]]]))
+  (make-email-body
+   [[:div (seq  (mapv post-html new-posts))]
+    [:div {:style  {:display "flex" :justify-content "center"}}
+     [:a {:href manage-link :style {:color "rgb(50,50,50)"}}
+      "Unsubscribe"]]]))
 
 (defn notify [email feed-url new-posts]
   (let [manage-link (get-manage-link email)
@@ -91,30 +113,12 @@
   (format "Confirm subscription to %s"
           (get-homepage-from-feed feed-url)))
 
-(defn make-button
-  [link label]
-  [:a {:style {:background-color "rgb(245, 167, 66)"
-               :border "none"
-               :border-radius "4px"
-               :box-sizing "border-box"
-               :cursor "pointer"
-               :display "inline-block"
-               :height "42px"
-               :line-height "19px !important"
-               :padding "10px 20px"
-               :text-align "center"
-               :color "rgb(30, 30, 30)"
-               :text-decoration "none"}
-       :href link}
-   label])
-
 (defn format-sub-conf-body [feed-url link]
   (let [homepage (get-homepage-from-feed feed-url)]
-    (html [:html
-           [:body
-            [:div (format "Confirm your subscription to %s:" homepage)]
-            [:div {:style  {:display "flex" :justify-content "center"}}
-             (make-button link "Confirm subscription")]]])))
+    (make-email-body
+     [[:tr [:td (format "Confirm your subscription to %s:" homepage)]]
+      [:tr [:td {:align "center"}
+            (make-button link "Confirm subscription")]]])))
 
 (defn send-sub-confirmation [email feed-url]
   (let [link (get-register-link email feed-url)

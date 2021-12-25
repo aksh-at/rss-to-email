@@ -4,21 +4,21 @@
  '[clojure.pprint :as pp]
  '[datomic.client.api :as d]
  '[datomic.ion.cast :as cast]
- '[datomic.ion.rustic :as rustic]
- '[datomic.ion.rustic.auth :as auth]
- '[datomic.ion.rustic.edn :as s-edn]
- '[datomic.ion.rustic.http :as http]
- '[datomic.ion.rustic.lambdas :as lambdas]
- '[datomic.ion.rustic.mailer :as mailer]
- '[datomic.ion.rustic.schema :as schema]
- '[datomic.ion.rustic.db-utils :as db-utils]
- '[datomic.ion.rustic.poller :as poller]
- '[datomic.ion.rustic.utils :as utils])
+ '[datomic.ion.rsstoemail :as rsstoemail]
+ '[datomic.ion.rsstoemail.auth :as auth]
+ '[datomic.ion.rsstoemail.edn :as s-edn]
+ '[datomic.ion.rsstoemail.http :as http]
+ '[datomic.ion.rsstoemail.lambdas :as lambdas]
+ '[datomic.ion.rsstoemail.mailer :as mailer]
+ '[datomic.ion.rsstoemail.schema :as schema]
+ '[datomic.ion.rsstoemail.db-utils :as db-utils]
+ '[datomic.ion.rsstoemail.poller :as poller]
+ '[datomic.ion.rsstoemail.utils :as utils])
 
 (cast/initialize-redirect :stdout)
 ;; (require '[clojure.tools.namespace.repl :refer [refresh]])
 
-;; Edit resources/datomic/ion/rustic/config.edn to match your system
+;; Edit resources/datomic/ion/rsstoemail/config.edn to match your system
 
 ;; test that config works
 (def client (db-utils/get-client))
@@ -26,6 +26,6 @@
 ;; create database and load sample data:
 (db-utils/ensure-schemas-loaded)
 
-(def conn (rustic/get-connection))
+(def conn (rsstoemail/get-connection))
 @(def db (d/db conn))
 
