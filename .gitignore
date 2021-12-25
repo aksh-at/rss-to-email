@@ -12,3 +12,4 @@ REBL-*.jar
 /frontend/node_modules
 /frontend/.next
 .log/
+*.repl
