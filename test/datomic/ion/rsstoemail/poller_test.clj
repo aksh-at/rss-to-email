@@ -1,23 +1,23 @@
-(ns datomic.ion.rustic.poller-test
+(ns datomic.ion.rsstoemail.poller-test
   (:require
    [clojure.instant :as instant]
    [clojure.test :as t]
    [datomic.client.api :as d]
    [clj-time.core :as time]
    [clj-time.coerce :as tc]
-   [datomic.ion.rustic :as rustic]
-   [datomic.ion.rustic.edn :as edn]
-   [datomic.ion.rustic.poller :as poller]
-   [datomic.ion.rustic.schema :as schema]
-   [datomic.ion.rustic.db-utils :as db-utils]
-   [datomic.ion.rustic.test-fixtures :as tf]
-   [datomic.ion.rustic.utils :as u]))
+   [datomic.ion.rsstoemail :as rsstoemail]
+   [datomic.ion.rsstoemail.edn :as edn]
+   [datomic.ion.rsstoemail.poller :as poller]
+   [datomic.ion.rsstoemail.schema :as schema]
+   [datomic.ion.rsstoemail.db-utils :as db-utils]
+   [datomic.ion.rsstoemail.test-fixtures :as tf]
+   [datomic.ion.rsstoemail.utils :as u]))
 
 (tf/test-setup)
 
-(def rss-post "test/datomic/ion/rustic/fixtures/rss-post.edn")
+(def rss-post "test/datomic/ion/rsstoemail/fixtures/rss-post.edn")
 
-(def atom-post "test/datomic/ion/rustic/fixtures/atom-post.edn")
+(def atom-post "test/datomic/ion/rsstoemail/fixtures/atom-post.edn")
 
 (t/deftest new-post-tests
   (t/testing "works for rss"
@@ -55,11 +55,11 @@
 
 (t/deftest poll-feed-tests
   (with-redefs [clojure.xml/parse                edn/read
-                datomic.ion.rustic.mailer/notify mock-notify]
+                datomic.ion.rsstoemail.mailer/notify mock-notify]
     (let
      [conn  (db-utils/get-connection)
       email "a1"]
-      (rustic/register-sub conn email rss-post)
+      (rsstoemail/register-sub conn email rss-post)
       (t/testing "notifies when no last updated date"
         (reset-notify)
         (t/is (not (notified? email)))

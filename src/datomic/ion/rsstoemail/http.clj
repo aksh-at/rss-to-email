@@ -1,11 +1,11 @@
-(ns datomic.ion.rustic.http
+(ns datomic.ion.rsstoemail.http
   (:require
    [clojure.java.io :as io]
    [clojure.data.json :as json]
    [datomic.ion.cast :as cast]
-   [datomic.ion.rustic :as rustic]
-   [datomic.ion.rustic.auth :as auth]
-   [datomic.ion.rustic.edn :as edn]
+   [datomic.ion.rsstoemail :as rsstoemail]
+   [datomic.ion.rsstoemail.auth :as auth]
+   [datomic.ion.rsstoemail.edn :as edn]
    [datomic.ion.lambda.api-gateway :as apigw]))
 
 ;; Helpers
@@ -28,8 +28,8 @@
 (defn request-manage
   [{:keys [headers body]}]
   (let [{:keys [email]} (read-json-stream body)]
-    (-> (rustic/get-connection)
-        (rustic/request-manage email)
+    (-> (rsstoemail/get-connection)
+        (rsstoemail/request-manage email)
         edn/write-str
         edn-response)))
 
@@ -38,8 +38,8 @@
   (let [{:keys [token]} (read-json-stream body)
         {:keys [email]} (auth/decode-jwt-claim token)]
     (when (auth/valid-jwt? token)
-      (-> (rustic/get-connection)
-          (rustic/get-subs-by-email email)
+      (-> (rsstoemail/get-connection)
+          (rsstoemail/get-subs-by-email email)
           edn/write-str
           edn-response))))
 
@@ -48,16 +48,16 @@
   (let [{:keys [token feed-url]} (read-json-stream body)
         {:keys [email]} (auth/decode-jwt-claim token)]
     (when (auth/valid-jwt? token)
-      (-> (rustic/get-connection)
-          (rustic/unsubscribe email feed-url)
+      (-> (rsstoemail/get-connection)
+          (rsstoemail/unsubscribe email feed-url)
           edn/write-str
           edn-response))))
 
 (defn request-sub
   [{:keys [headers body]}]
   (let [{:keys [email feed-url]} (read-json-stream body)]
-    (-> (rustic/get-connection)
-        (rustic/request-sub email feed-url)
+    (-> (rsstoemail/get-connection)
+        (rsstoemail/request-sub email feed-url)
         edn/write-str
         edn-response)))
 
@@ -67,8 +67,8 @@
     (cast/event {:msg "Registering sub." :token token :feed-url feed-url})
     (def email (:email (auth/decode-jwt-claim token)))
     (if (auth/valid-jwt? token)
-      (-> (rustic/get-connection)
-          (rustic/register-sub email feed-url)
+      (-> (rsstoemail/get-connection)
+          (rsstoemail/register-sub email feed-url)
           edn/write-str
           edn-response)
       (-> :invalid

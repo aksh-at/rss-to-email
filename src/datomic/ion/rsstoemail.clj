@@ -1,11 +1,11 @@
-(ns datomic.ion.rustic
+(ns datomic.ion.rsstoemail
   (:require
    [datomic.client.api :as d]
    [datomic.ion.cast :as cast]
-   [datomic.ion.rustic.mailer :as mailer]
-   [datomic.ion.rustic.poller :as poller]
-   [datomic.ion.rustic.schema :as schema]
-   [datomic.ion.rustic.db-utils :as db-utils]))
+   [datomic.ion.rsstoemail.mailer :as mailer]
+   [datomic.ion.rsstoemail.poller :as poller]
+   [datomic.ion.rsstoemail.schema :as schema]
+   [datomic.ion.rsstoemail.db-utils :as db-utils]))
 
 (cast/initialize-redirect :stderr)
 

@@ -1,13 +1,13 @@
-(ns datomic.ion.rustic.http-test
+(ns datomic.ion.rsstoemail.http-test
   (:require
    [clojure.data.json :as json]
    [clojure.edn :as edn]
    [clojure.test :as t]
    [clojure.string :as str]
-   [datomic.ion.rustic.utils :as u]
-   [datomic.ion.rustic.http :as http]
-   [datomic.ion.rustic.lambdas :as lambdas]
-   [datomic.ion.rustic.test-fixtures :as tf]))
+   [datomic.ion.rsstoemail.utils :as u]
+   [datomic.ion.rsstoemail.http :as http]
+   [datomic.ion.rsstoemail.lambdas :as lambdas]
+   [datomic.ion.rsstoemail.test-fixtures :as tf]))
 
 (tf/test-setup)
 
@@ -46,7 +46,7 @@
   (get-subs token))
 
 (t/deftest subs-tests
-  (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
+  (with-redefs [datomic.ion.rsstoemail.mailer/send-email mock-send-email]
     (t/testing "register subs works"
       (t/is (= (register-and-get-subs "user1" "f1") [[#:sub{:email "user1", :feed-url "f1"}]]))
       (t/is (= (register-and-get-subs "user1" "f2") [[#:sub{:email "user1", :feed-url "f1"}] [#:sub{:email "user1", :feed-url "f2"}]])))))
@@ -66,7 +66,7 @@
   (http/unsubscribe {:body (char-array (json/write-str {:token token :feed-url feed-url}))}))
 
 (t/deftest manage-tests
-  (with-redefs [datomic.ion.rustic.mailer/send-email mock-send-email]
+  (with-redefs [datomic.ion.rsstoemail.mailer/send-email mock-send-email]
     (t/testing "manage subs works"
       (register-and-get-subs "user2" "f1")
       (register-and-get-subs "user2" "f2")

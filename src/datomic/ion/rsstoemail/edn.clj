@@ -1,6 +1,6 @@
 ;; source: ion-starter
 
-(ns datomic.ion.rustic.edn
+(ns datomic.ion.rsstoemail.edn
   (:refer-clojure :exclude (read))
   (:require
    [clojure.edn :as edn]

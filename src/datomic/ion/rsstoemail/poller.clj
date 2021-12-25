@@ -1,15 +1,15 @@
-(ns datomic.ion.rustic.poller (:require
-                               [clojure.instant :as instant]
-                               [clojure.xml :as xml]
-                               [datomic.client.api :as d]
-                               [datomic.ion.cast :as cast]
-                               [datomic.ion.rustic.mailer :as mailer]
-                               [datomic.ion.rustic.schema :as schema]
-                               [datomic.ion.rustic.utils :as u]
-                               [clj-http.client :as client]
-                               [clj-time.core :as t]
-                               [clj-time.format :as tf]
-                               [clj-time.coerce :as tc]))
+(ns datomic.ion.rsstoemail.poller (:require
+                                   [clojure.instant :as instant]
+                                   [clojure.xml :as xml]
+                                   [datomic.client.api :as d]
+                                   [datomic.ion.cast :as cast]
+                                   [datomic.ion.rsstoemail.mailer :as mailer]
+                                   [datomic.ion.rsstoemail.schema :as schema]
+                                   [datomic.ion.rsstoemail.utils :as u]
+                                   [clj-http.client :as client]
+                                   [clj-time.core :as t]
+                                   [clj-time.format :as tf]
+                                   [clj-time.coerce :as tc]))
 
 (defn find-tag [x input]
   (filter #(= (% :tag) x) input))

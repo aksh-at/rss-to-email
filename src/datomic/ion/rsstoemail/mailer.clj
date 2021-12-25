@@ -1,9 +1,9 @@
-(ns datomic.ion.rustic.mailer
+(ns datomic.ion.rsstoemail.mailer
   (:use [hiccup.core])
   (:require
    [ses-mailer.core :as m]
-   [datomic.ion.rustic.auth :as auth]
-   [datomic.ion.rustic.utils :as u]
+   [datomic.ion.rsstoemail.auth :as auth]
+   [datomic.ion.rsstoemail.utils :as u]
    [clojure.string :as str])
   (:import (com.amazonaws.auth DefaultAWSCredentialsProviderChain)))
 

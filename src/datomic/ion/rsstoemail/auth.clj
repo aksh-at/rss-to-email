@@ -1,4 +1,4 @@
-(ns datomic.ion.rustic.auth
+(ns datomic.ion.rsstoemail.auth
   (:require
    [datomic.ion :as ion]
    [clj-jwt.core  :refer :all]
@@ -25,7 +25,7 @@
 (defn create-jwt
   [email]
   (let
-   [claim {:iss "rustic"
+   [claim {:iss "rsstoemail"
            :email email
            :exp (plus (now) (days 14))
            :iat (now)}]

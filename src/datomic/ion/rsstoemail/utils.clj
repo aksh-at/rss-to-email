@@ -1,6 +1,6 @@
 ;; source: ion-starter
 
-(ns datomic.ion.rustic.utils
+(ns datomic.ion.rsstoemail.utils
   (:require [cognitect.anomalies :as anomalies]))
 
 (def retryable-anomaly?

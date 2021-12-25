@@ -1,4 +1,4 @@
-(ns datomic.ion.rustic.schema
+(ns datomic.ion.rsstoemail.schema
   (:require
    [datomic.client.api :as d]))
 

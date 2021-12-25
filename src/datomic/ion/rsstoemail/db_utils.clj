@@ -1,15 +1,15 @@
-(ns datomic.ion.rustic.db-utils (:require
-                                 [clojure.edn :as edn]
-                                 [clojure.java.io :as io]
-                                 [datomic.client.api :as d]
-                                 [datomic.ion.rustic.schema :as schema]
-                                 [datomic.ion.rustic.utils :as utils]))
+(ns datomic.ion.rsstoemail.db-utils (:require
+                                     [clojure.edn :as edn]
+                                     [clojure.java.io :as io]
+                                     [datomic.client.api :as d]
+                                     [datomic.ion.rsstoemail.schema :as schema]
+                                     [datomic.ion.rsstoemail.utils :as utils]))
 
 (def database-name "datomic-rustic")
 
 (def get-client
   "Return a shared client."
-  (memoize #(if-let [r (io/resource "datomic/ion/rustic/config.edn")]
+  (memoize #(if-let [r (io/resource "datomic/ion/rsstoemail/config.edn")]
               (d/client (edn/read-string (slurp r)))
               (throw (RuntimeException. "bad")))))
 

@@ -1,17 +1,17 @@
-(ns datomic.ion.rustic.mailer-test
+(ns datomic.ion.rsstoemail.mailer-test
   (:require
    [clojure.test :as t]
    [datomic.client.api :as d]
-   [datomic.ion.rustic.edn :as edn]
-   [datomic.ion.rustic.mailer :as mailer]
-   [datomic.ion.rustic.poller :as poller]
-   [datomic.ion.rustic.test-fixtures :as tf]))
+   [datomic.ion.rsstoemail.edn :as edn]
+   [datomic.ion.rsstoemail.mailer :as mailer]
+   [datomic.ion.rsstoemail.poller :as poller]
+   [datomic.ion.rsstoemail.test-fixtures :as tf]))
 
 (tf/test-setup)
 
-(def rss-post "test/datomic/ion/rustic/fixtures/rss-post.edn")
+(def rss-post "test/datomic/ion/rsstoemail/fixtures/rss-post.edn")
 
-(def atom-post "test/datomic/ion/rustic/fixtures/atom-post.edn")
+(def atom-post "test/datomic/ion/rsstoemail/fixtures/atom-post.edn")
 
 (def attr-link-post {:tag :entry,
                      :attrs nil,
@@ -83,6 +83,6 @@
 
 (t/deftest test-format-body
   ;; mock get-description so that the output isn't stupid long
-  (with-redefs [datomic.ion.rustic.mailer/get-post-description (fn [_] "potato")]
+  (with-redefs [datomic.ion.rsstoemail.mailer/get-post-description (fn [_] "potato")]
     (def new-posts (-> atom-post edn/read (poller/get-new-posts nil)))
     (t/is (= (mailer/format-notify-body "url" new-posts "") expected-html))))
