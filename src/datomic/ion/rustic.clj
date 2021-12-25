@@ -60,4 +60,6 @@
   (cast/event {:msg "Starting polling."})
   (let [db (d/db conn)
         all-subs (schema/get-all-subs db)]
-    (map #(poller/poll-feed conn %) all-subs)))
+    (-> #(poller/poll-feed conn %)
+        (pmap all-subs)
+        doall)))
