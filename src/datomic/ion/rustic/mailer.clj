@@ -9,7 +9,7 @@
 
 ;; Constants.
 
-(def from-email "\"RSS To Email\" <no-reply@rssto.email>")
+(def from-email "\"RSS To Email\" <mailer@rssto.email>")
 
 (defn get-manage-link
   [email]
